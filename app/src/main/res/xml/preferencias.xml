@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Identificación">
+        <EditTextPreference
+            android:key="terminal"
+            android:icon="@android:drawable/ic_menu_mylocation"
+            android:title="Nº de puesto"
+            android:inputType="numberSigned"
+            android:maxLength="3"
+            android:summary="Número de puesto en la gestión"
+            android:dialogTitle="Número de puesto"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Comunicación">
+        <EditTextPreference
+            android:key="ip_servidor"
+            android:icon="@android:drawable/ic_menu_directions"
+            android:title="IP del servidor"
+            android:summary="IP para la comunicación vía WIFI"
+            android:defaultValue=""
+            android:dialogTitle="IP para la comunicación vía WIFI" />
+
+        <EditTextPreference
+            android:key="puerto_servidor"
+            android:icon="@android:drawable/ic_menu_directions"
+            android:title="Puerto del servidor"
+            android:inputType="numberSigned"
+            android:summary="Puerto para la comunicación vía WIFI"
+            android:defaultValue=""
+            android:dialogTitle="Puerto para la comunicación vía WIFI" />
+
+        <EditTextPreference
+            android:key="prefijo"
+            android:icon="@android:drawable/ic_menu_directions"
+            android:title="Prefijo"
+            android:summary="Prefijo de las bases de datos"
+            android:defaultValue=""
+            android:dialogTitle="Prefijo de las BBDD" />
+
+        <ListPreference
+            android:key="sistema"
+            android:icon="@android:drawable/ic_menu_recent_history"
+            android:title="Sistema"
+            android:summary="Sistema de las bases de datos"
+            android:entries="@array/entries_sistemas"
+            android:entryValues="@array/entryValues_sistemas"
+            android:defaultValue="0" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
