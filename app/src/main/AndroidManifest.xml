@@ -26,6 +26,11 @@
             android:label="Configuración"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".Ventas.ComandaActivity"
+            android:label="Comanda"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

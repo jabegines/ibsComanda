@@ -4,11 +4,13 @@
 
     <string name="comanda">Comanda</string>
     <string name="configuracion">Configuración</string>
+    <string name="descripcion">Descripción</string>
     <string name="ultima_mesa">Ultima mesa:</string>
     <string name="ultima_sala">Ultima sala:</string>
 
 
     <!-- Mensajes -->
+    <string name="mesa_no_existe">La mesa indicada no existe</string>
     <string name="sala_no_existe">La sala indicada no existe</string>
     <string name="sin_mesa">No ha indicado ninguna mesa</string>
     <string name="sin_sala">No ha indicado ninguna sala</string>

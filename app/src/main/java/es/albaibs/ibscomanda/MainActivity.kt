@@ -9,7 +9,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import es.albaibs.ibscomanda.Dao.SalasDao
-import es.albaibs.ibscomanda.Entity.Cuentas
 import es.albaibs.ibscomanda.Varios.Mensaje
 import es.albaibs.ibscomanda.Varios.Preferencias
 import es.albaibs.ibscomanda.Varios.ponerCeros
@@ -20,11 +19,12 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.sql.Connection
 
+
 class MainActivity : AppCompatActivity() {
     private var conn: Connection? = null
     private var connInf: Connection? = null
 
-    private var fCuentas: MutableList<Cuentas> = arrayListOf()
+    //private var fCuentas: MutableList<Cuentas> = arrayListOf()
     private lateinit var prefs: SharedPreferences
     private lateinit var binding: MainActivityBinding
     private var fPrefijo: String = ""
@@ -91,45 +91,43 @@ class MainActivity : AppCompatActivity() {
 
     fun lanzarComanda(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
-
-        if (datosCorrectos()) {
-            val i = Intent(this, ComandaActivity::class.java)
-            i.putExtra("sala", edtUltimaSala.text.toString())
-            i.putExtra("mesa", edtUltimaMesa.text.toString())
-            startActivity(i)
-        }
-    }
-
-    private fun datosCorrectos(): Boolean {
-        var resultado = true
+        var continuar = true
 
         if (edtUltimaSala.text.toString() == "") {
             Mensaje(this, getString(R.string.sin_sala))
-            return false
+            continuar = false
         }
 
         if (edtUltimaMesa.text.toString() == "") {
             Mensaje(this, getString(R.string.sin_mesa))
-            return false
+            continuar = false
         }
 
-        doAsync {
-            if (SalasDao.existeSala(connInf!!, edtUltimaSala.text.toString().toInt())) {
+        if (continuar) {
+            doAsync {
+                if (SalasDao.existeSala(connInf!!, edtUltimaSala.text.toString().toInt())) {
 
-                if (!SalasDao.existeMesa(connInf!!, edtUltimaSala.text.toString().toInt(), edtUltimaMesa.text.toString().toInt())) {
+                    if (SalasDao.existeMesa(connInf!!, edtUltimaSala.text.toString().toInt(), edtUltimaMesa.text.toString().toInt())) {
 
+                        val i = Intent(this@MainActivity, ComandaActivity::class.java)
+                        i.putExtra("sala", edtUltimaSala.text.toString())
+                        i.putExtra("mesa", edtUltimaMesa.text.toString())
+                        startActivity(i)
+
+                    } else {
+                        uiThread {
+                            Mensaje(this@MainActivity, getString(R.string.mesa_no_existe))
+                        }
+                    }
+
+                } else {
+                    uiThread {
+                        Mensaje(this@MainActivity, getString(R.string.sala_no_existe))
+                    }
                 }
 
-            } else {
-                uiThread {
-                    Mensaje(this@MainActivity, getString(R.string.sala_no_existe))
-                    resultado = false
-                }
             }
-
         }
-
-        return resultado
     }
 
 
@@ -142,18 +140,11 @@ class MainActivity : AppCompatActivity() {
                 if (connInf == null) connInf = DBConnection.conectar(this@MainActivity, true)
 
                 if (conn != null) {
-                    if (!conn!!.isClosed) {
+                    //if (!conn!!.isClosed) {
 
                         //fCuentas = CuentasDao.getAllCuentas(conn!!, fPrefijo, fSistema)
                         //fModificadores = CuentasDao.getModificadores(conn!!, fCuentas)
-
-                        uiThread {
-                            if (fCuentas.size > 0) {
-                                //mostrarCuentas()
-                            }
-                            //else limpiarLayouts()
-                        }
-                    }
+                    //}
 
                 } else {
                     Mensaje(this@MainActivity, "Error al conectar, revise las conexiones")

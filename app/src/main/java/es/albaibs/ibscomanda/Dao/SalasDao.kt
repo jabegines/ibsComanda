@@ -22,11 +22,12 @@ class SalasDao {
             }
         }
 
+
         fun existeMesa(conn: Connection, queSala: Int, queMesa: Int): Boolean {
             val comm: Statement = conn.createStatement()
 
             return try {
-                val rs = comm.executeQuery("SELECT Mesa FROM HT DistribucionMesas WHERE Sala = $queSala AND Mesa = $queMesa")
+                val rs = comm.executeQuery("SELECT Mesa FROM HTDistribucionMesas WHERE Sala = $queSala AND Mesa = $queMesa")
 
                 rs.next()
 
