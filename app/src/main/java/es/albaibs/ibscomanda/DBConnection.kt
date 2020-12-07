@@ -14,8 +14,8 @@ class DBConnection {
 
     companion object {
 
-        private var connectionGES: Connection? = null
-        private var connectionINF: Connection? = null
+        var connectionGES: Connection? = null
+        var connectionINF: Connection? = null
         var connectionSYS: Connection? = null
 
         fun conectar(context: Context, bdInf: Boolean): Connection {

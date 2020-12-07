@@ -6,31 +6,46 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import es.albaibs.ibscomanda.Dao.SalasDao
 import es.albaibs.ibscomanda.Entity.Cuentas
 import es.albaibs.ibscomanda.Varios.Mensaje
 import es.albaibs.ibscomanda.Varios.Preferencias
 import es.albaibs.ibscomanda.Varios.ponerCeros
+import es.albaibs.ibscomanda.Ventas.ComandaActivity
+import es.albaibs.ibscomanda.databinding.MainActivityBinding
+import kotlinx.android.synthetic.main.main_activity.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.sql.Connection
 
 class MainActivity : AppCompatActivity() {
     private var conn: Connection? = null
+    private var connInf: Connection? = null
+
     private var fCuentas: MutableList<Cuentas> = arrayListOf()
     private lateinit var prefs: SharedPreferences
+    private lateinit var binding: MainActivityBinding
     private var fPrefijo: String = ""
     private var fSistema: String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = MainActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        // Esta configuración sirve para poder usar imágenes vectoriales con versiones antiguas de android (4.4, etc.)
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         fPrefijo = prefs.getString("prefijo", "") ?: ""
         if (fPrefijo != "") fPrefijo += "_"
         fSistema = prefs.getString("sistema", "00") ?: "00"
         fSistema = ponerCeros(fSistema, 2)
+
+        inicializarControles()
 
         conectarABD()
     }
@@ -39,7 +54,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         // Cerramos las conexiones a las bases de datos
         try {
-            //if (connInf != null) connInf.close()
+            if (connInf != null) connInf!!.close()
             if (conn != null) conn!!.close()
             val connSys: Connection = DBConnection.connectionSYS as Connection
             connSys.close()
@@ -47,17 +62,76 @@ class MainActivity : AppCompatActivity() {
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
+
+        prefs.edit().putString("ultima_sala", edtUltimaSala.text.toString()).apply()
+        prefs.edit().putString("ultima_mesa", edtUltimaMesa.text.toString()).apply()
+
         super.onDestroy()
     }
 
 
-
-    fun lanzarConfiguracion(view: View) {
-        // LLamamos a invalidate para hacer algo con el view y que no dé warning el analizador
-        view.invalidate()
-        val i = Intent(this, Preferencias::class.java)
-        startActivity(i)
+    private fun inicializarControles() {
+        edtUltimaSala.setText(prefs.getString("ultima_sala", "") ?: "")
+        edtUltimaMesa.setText(prefs.getString("ultima_mesa", "") ?: "")
     }
+
+
+    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        when (item.itemId) {
+            R.id.navigation_configuracion -> {
+                val i = Intent(this, Preferencias::class.java)
+                startActivity(i)
+
+                return@OnNavigationItemSelectedListener true
+            }
+        }
+        false
+    }
+
+
+    fun lanzarComanda(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+
+        if (datosCorrectos()) {
+            val i = Intent(this, ComandaActivity::class.java)
+            i.putExtra("sala", edtUltimaSala.text.toString())
+            i.putExtra("mesa", edtUltimaMesa.text.toString())
+            startActivity(i)
+        }
+    }
+
+    private fun datosCorrectos(): Boolean {
+        var resultado = true
+
+        if (edtUltimaSala.text.toString() == "") {
+            Mensaje(this, getString(R.string.sin_sala))
+            return false
+        }
+
+        if (edtUltimaMesa.text.toString() == "") {
+            Mensaje(this, getString(R.string.sin_mesa))
+            return false
+        }
+
+        doAsync {
+            if (SalasDao.existeSala(connInf!!, edtUltimaSala.text.toString().toInt())) {
+
+                if (!SalasDao.existeMesa(connInf!!, edtUltimaSala.text.toString().toInt(), edtUltimaMesa.text.toString().toInt())) {
+
+                }
+
+            } else {
+                uiThread {
+                    Mensaje(this@MainActivity, getString(R.string.sala_no_existe))
+                    resultado = false
+                }
+            }
+
+        }
+
+        return resultado
+    }
+
 
 
     private fun conectarABD() {
@@ -65,6 +139,7 @@ class MainActivity : AppCompatActivity() {
         doAsync {
             try {
                 if (conn == null) conn = DBConnection.conectar(this@MainActivity, false)
+                if (connInf == null) connInf = DBConnection.conectar(this@MainActivity, true)
 
                 if (conn != null) {
                     if (!conn!!.isClosed) {
