@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">ibsComanda</string>
 
-
+    <string name="cantidad">Cantidad</string>
     <string name="comanda">Comanda</string>
     <string name="configuracion">Configuración</string>
     <string name="descripcion">Descripción</string>
+    <string name="grupos">Grupos vta.</string>
     <string name="ultima_mesa">Ultima mesa:</string>
     <string name="ultima_sala">Ultima sala:</string>
 

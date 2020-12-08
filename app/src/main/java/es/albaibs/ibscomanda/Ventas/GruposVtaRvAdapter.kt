@@ -15,6 +15,13 @@ class GruposVtaRvAdapter(var grupos: MutableList<ListaGruposVta>, val context: C
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = grupos[position]
         holder.bind(item, context)
+
+        holder.itemView.setOnClickListener {
+            //selectedPos = position
+            //lecturaLineaId = lecturasLinea[position].lecturaLineaId
+            notifyDataSetChanged()
+            listener.onClick(it, grupos[position])
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

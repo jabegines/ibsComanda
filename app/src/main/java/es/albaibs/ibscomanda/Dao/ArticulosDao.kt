@@ -1,32 +1,34 @@
 package es.albaibs.ibscomanda.Dao
 
 import android.os.HandlerThread
-import es.albaibs.ibscomanda.Varios.ListaGruposVta
+import es.albaibs.ibscomanda.Varios.ListaArticulosGrupo
 import java.sql.Connection
 import java.sql.Statement
 import java.util.concurrent.CountDownLatch
 
 
-class GruposVtaDao {
+class ArticulosDao {
 
     companion object {
 
-        fun getAllGruposVta(conn: Connection): MutableList<ListaGruposVta> {
-            val listaGrupos = emptyList<ListaGruposVta>().toMutableList()
+        fun getArticulosGrupo(conn: Connection, queGrupo: Int): MutableList<ListaArticulosGrupo> {
+            val listaArticulos = emptyList<ListaArticulosGrupo>().toMutableList()
             val comm: Statement = conn.createStatement()
 
             val latch = CountDownLatch(1)
             val uiThread = object : HandlerThread("UIHandler") {
                 override fun run() {
                     try {
-                        val rs = comm.executeQuery("SELECT Grupo, Descripcion FROM HTGruposVenta" +
-                                                " ORDER BY Descripcion")
+                        val rs = comm.executeQuery("SELECT A.Articulo, B.Descripcion FROM HTGruposArticulo A" +
+                                " LEFT JOIN Articulos B ON B.Articulo = A.Articulo" +
+                                " WHERE A.Grupo = " + queGrupo +
+                                " ORDER BY B.Descripcion")
 
                         while (rs.next()) {
-                            val lista = ListaGruposVta()
-                            lista.grupoId = rs.getInt("GRUPO")
+                            val lista = ListaArticulosGrupo()
+                            lista.articuloId = rs.getInt("ARTICULO")
                             lista.descripcion = rs.getString("DESCRIPCION")
-                            listaGrupos.add(lista)
+                            listaArticulos.add(lista)
                         }
                         latch.countDown()
                     } catch (e: Exception) {
@@ -36,8 +38,7 @@ class GruposVtaDao {
             }
             uiThread.start()
             latch.await()
-            return listaGrupos
+            return listaArticulos
         }
     }
-
 }
