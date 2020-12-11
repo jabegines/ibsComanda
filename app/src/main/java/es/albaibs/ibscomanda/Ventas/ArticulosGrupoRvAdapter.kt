@@ -45,13 +45,13 @@ class ArticulosGrupoRvAdapter(var articulos: MutableList<ListaArticulosGrupo>, v
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private val descripcion = itemView.findViewById(R.id.tvDescrArt) as TextView
-        private val cantidad = itemView.findViewById(R.id.tvCantidad) as TextView
+        //private val cantidad = itemView.findViewById(R.id.tvCantidad) as TextView
 
 
         fun bind(articulo: ListaArticulosGrupo, context: Context) {
             descripcion.text = articulo.descripcion
-            if (articulo.cantidad != 0) cantidad.text = articulo.cantidad.toString()
-            else cantidad.visibility = View.INVISIBLE
+            //if (articulo.cantidad != 0) cantidad.text = articulo.cantidad.toString()
+            //else cantidad.visibility = View.INVISIBLE
         }
     }
 

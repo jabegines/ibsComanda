@@ -12,5 +12,11 @@ class ListaGruposVta {
 class ListaArticulosGrupo {
     var articuloId: Int = 0
     var descripcion: String = ""
-    var cantidad: Int = 0
+}
+
+
+class DatosCabecera {
+    var sala: Int = 0
+    var mesa: Int = 0
+    var fraccion: Int = 0
 }

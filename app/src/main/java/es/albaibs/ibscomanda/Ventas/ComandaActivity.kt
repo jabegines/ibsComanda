@@ -4,14 +4,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.DBConnection
 import es.albaibs.ibscomanda.Dao.ArticulosDao
+import es.albaibs.ibscomanda.Dao.CuentasDao
 import es.albaibs.ibscomanda.Dao.GruposVtaDao
+import es.albaibs.ibscomanda.Varios.DatosCabecera
 import es.albaibs.ibscomanda.Varios.ListaArticulosGrupo
 import es.albaibs.ibscomanda.Varios.ListaGruposVta
-import es.albaibs.ibscomanda.Varios.Mensaje
 import es.albaibs.ibscomanda.databinding.ComandaActivityBinding
 import kotlinx.android.synthetic.main.comanda_activity.*
 import org.jetbrains.anko.doAsync
@@ -24,6 +24,7 @@ class ComandaActivity: AppCompatActivity() {
     private lateinit var fAdptGrupos: GruposVtaRvAdapter
     private lateinit var fAdptArticulos: ArticulosGrupoRvAdapter
     private val connInf: Connection = DBConnection.connectionINF as Connection
+    private val connGes: Connection = DBConnection.connectionGES as Connection
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +38,6 @@ class ComandaActivity: AppCompatActivity() {
 
     private fun inicializarControles() {
         fRecycler = binding.rvComanda
-        //fRecycler.layoutManager = GridLayoutManager(this, 2) //LinearLayoutManager(this)
     }
 
 
@@ -85,8 +85,16 @@ class ComandaActivity: AppCompatActivity() {
     }
 
     private fun vender(data: ListaArticulosGrupo) {
-        data.cantidad++
-        fRecycler.adapter?.notifyDataSetChanged()
+        var resultado = true
+        val registro = DatosCabecera()
+        registro.sala = 2
+        registro.mesa = 28
+        registro.fraccion = 0
+        doAsync {
+            resultado = CuentasDao.nuevaCabecera(connGes, registro)
+        }
+
+        //fRecycler.adapter?.notifyDataSetChanged()
     }
 
     fun volverAGrupos(view: View) {
