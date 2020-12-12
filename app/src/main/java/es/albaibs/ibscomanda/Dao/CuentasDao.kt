@@ -9,6 +9,19 @@ class CuentasDao {
 
     companion object {
 
+        fun cuentaAbierta(conn: Connection, fSala: Short, fMesa: Short): Boolean {
+            val comm: Statement = conn.createStatement()
+
+            return try {
+                val rs = comm.executeQuery("SELECT Sala FROM HTCabeceraCuentas WHERE Sala = $fSala AND Mesa = $fMesa")
+                return rs.next()
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+        }
+
         fun nuevaCabecera(conn: Connection, registro: DatosCabecera): Boolean {
             val comm: Statement = conn.createStatement()
 
