@@ -1,4 +1,4 @@
-package es.albaibs.ibscomanda.Ventas
+package es.albaibs.ibscomanda.ventas
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.R
-import es.albaibs.ibscomanda.Varios.ListaGruposVta
+import es.albaibs.ibscomanda.varios.ListaGruposVta
 
 
 class GruposVtaRvAdapter(var grupos: MutableList<ListaGruposVta>, val context: Context, var listener: OnItemClickListener): RecyclerView.Adapter<GruposVtaRvAdapter.ViewHolder>() {
@@ -17,8 +17,6 @@ class GruposVtaRvAdapter(var grupos: MutableList<ListaGruposVta>, val context: C
         holder.bind(item, context)
 
         holder.itemView.setOnClickListener {
-            //selectedPos = position
-            //lecturaLineaId = lecturasLinea[position].lecturaLineaId
             notifyDataSetChanged()
             listener.onClick(it, grupos[position])
         }

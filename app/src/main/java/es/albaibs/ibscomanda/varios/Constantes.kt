@@ -1,8 +1,11 @@
-package es.albaibs.ibscomanda.Varios
+package es.albaibs.ibscomanda.varios
 
-import net.sourceforge.jtds.jdbc.DateTime
-import java.time.LocalDateTime
-import java.util.*
+const val VERSION_PROGRAMA = "1.00"
+const val COMPILACION_PROGRAMA = ".1"
+
+const val VIENDO_GRUPOS = 1
+const val VIENDO_ARTICULOS = 2
+const val VIENDO_CUENTA = 3
 
 
 class ListaGruposVta {
@@ -13,10 +16,20 @@ class ListaGruposVta {
 
 class ListaArticulosGrupo {
     var articuloId: Int = 0
+    var codigo: String = ""
     var descripcion: String = ""
+    var descrTicket: String = ""
+}
+
+class ListaLineasCuenta {
+    var orden: Int = 0
+    var cantidad: String = ""
+    var descripcion: String = ""
+    var importe: String = ""
 }
 
 
+// Registros para trabajar con las tablas
 class DatosCabecera {
     var sala: Short = 0
     var mesa: Short = 0
@@ -42,4 +55,8 @@ class DatosLinea {
     var articuloId: Int = 0
     var codigoArt: String = ""
     var descripcion: String = ""
+    var descrTicket: String = ""
+    var cantidad: String = ""
+    var usuario: Short = 0
 }
+

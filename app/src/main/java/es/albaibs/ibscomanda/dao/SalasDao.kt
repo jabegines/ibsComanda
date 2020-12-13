@@ -1,4 +1,4 @@
-package es.albaibs.ibscomanda.Dao
+package es.albaibs.ibscomanda.dao
 
 import java.sql.Connection
 import java.sql.Statement

@@ -3,7 +3,7 @@ package es.albaibs.ibscomanda
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import es.albaibs.ibscomanda.Varios.ponerCeros
+import es.albaibs.ibscomanda.varios.ponerCeros
 import net.sourceforge.jtds.jdbc.Driver
 import java.sql.Connection
 import java.sql.DriverManager

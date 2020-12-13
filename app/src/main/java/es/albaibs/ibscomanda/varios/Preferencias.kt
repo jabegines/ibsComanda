@@ -1,4 +1,4 @@
-package es.albaibs.ibscomanda.Varios
+package es.albaibs.ibscomanda.varios
 
 import android.os.Bundle
 import android.preference.*

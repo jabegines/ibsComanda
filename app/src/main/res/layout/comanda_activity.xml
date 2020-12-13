@@ -22,17 +22,32 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
-            android:id="@+id/btnGruposVta"
+            android:id="@+id/btnVerCuenta"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#FFFFFF"
             android:drawableTop="@drawable/grupos"
-            android:onClick="volverAGrupos"
-            android:text="@string/grupos"
+            android:onClick="verCuenta"
+            android:text="@string/ver_cuenta"
             android:textAllCaps="false"
             android:textColor="#000000"
             android:textSize="14sp" />
+
+
+        <Button
+            android:id="@+id/btnEnEspera"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:drawableTop="@drawable/espera"
+            android:onClick="enEspera"
+            android:text="@string/en_espera"
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
 
     </LinearLayout>
 

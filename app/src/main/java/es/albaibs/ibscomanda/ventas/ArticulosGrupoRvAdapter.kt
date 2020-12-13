@@ -1,4 +1,4 @@
-package es.albaibs.ibscomanda.Ventas
+package es.albaibs.ibscomanda.ventas
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.R
-import es.albaibs.ibscomanda.Varios.ListaArticulosGrupo
+import es.albaibs.ibscomanda.varios.ListaArticulosGrupo
 
 
 class ArticulosGrupoRvAdapter(var articulos: MutableList<ListaArticulosGrupo>, val context: Context, var listener: OnItemClickListener): RecyclerView.Adapter<ArticulosGrupoRvAdapter.ViewHolder>() {

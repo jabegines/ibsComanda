@@ -1,4 +1,4 @@
-package es.albaibs.ibscomanda.Entity
+package es.albaibs.ibscomanda.entity
 
 
 data class Cuentas (

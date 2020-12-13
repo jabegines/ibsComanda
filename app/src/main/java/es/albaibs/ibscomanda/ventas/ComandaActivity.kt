@@ -1,21 +1,19 @@
-package es.albaibs.ibscomanda.Ventas
+package es.albaibs.ibscomanda.ventas
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.DBConnection
-import es.albaibs.ibscomanda.Dao.ArticulosDao
-import es.albaibs.ibscomanda.Dao.CuentasDao
-import es.albaibs.ibscomanda.Dao.GruposVtaDao
-import es.albaibs.ibscomanda.Dao.LineasDao
-import es.albaibs.ibscomanda.Varios.DatosCabecera
-import es.albaibs.ibscomanda.Varios.DatosLinea
-import es.albaibs.ibscomanda.Varios.ListaArticulosGrupo
-import es.albaibs.ibscomanda.Varios.ListaGruposVta
+import es.albaibs.ibscomanda.dao.ArticulosDao
+import es.albaibs.ibscomanda.dao.CuentasDao
+import es.albaibs.ibscomanda.dao.GruposVtaDao
+import es.albaibs.ibscomanda.dao.LineasDao
 import es.albaibs.ibscomanda.databinding.ComandaActivityBinding
-import kotlinx.android.synthetic.main.comanda_activity.*
+import es.albaibs.ibscomanda.varios.*
 import org.jetbrains.anko.doAsync
 import java.sql.Connection
 
@@ -25,13 +23,15 @@ class ComandaActivity: AppCompatActivity() {
     private lateinit var fRecycler: RecyclerView
     private lateinit var fAdptGrupos: GruposVtaRvAdapter
     private lateinit var fAdptArticulos: ArticulosGrupoRvAdapter
+    private lateinit var fAdptCuenta: CuentasRvAdapter
     private val connInf: Connection = DBConnection.connectionINF as Connection
     private val connGes: Connection = DBConnection.connectionGES as Connection
 
-    private var fCuentaAbierta: Boolean = false
+    private var fVistaActual: Int  = 1
     private var fSala: Short = 0
     private var fMesa: Short = 0
     private var fLinea: Int = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +52,7 @@ class ComandaActivity: AppCompatActivity() {
         doAsync {
             fLinea = LineasDao.getUltimaLinea(connGes, fSala, fMesa)
 
-            if (fLinea == 0) {
+            if (fLinea == 1) {
                 val registro = DatosCabecera()
                 registro.sala = fSala
                 registro.mesa = fMesa
@@ -67,7 +67,8 @@ class ComandaActivity: AppCompatActivity() {
 
 
     private fun prepararGruposVta() {
-        btnGruposVta.visibility = View.GONE
+        fVistaActual = VIENDO_GRUPOS
+        //btnEnEspera.visibility = View.VISIBLE
         setRVGrupos()
     }
 
@@ -78,7 +79,7 @@ class ComandaActivity: AppCompatActivity() {
                 }
             })
 
-        fRecycler.layoutManager = GridLayoutManager(this, 4)
+        fRecycler.layoutManager = GridLayoutManager(this, 3)
         fRecycler.adapter = fAdptGrupos
     }
 
@@ -89,7 +90,8 @@ class ComandaActivity: AppCompatActivity() {
 
 
     private fun prepararArticulosGrupo(queGrupo: Int) {
-        btnGruposVta.visibility = View.VISIBLE
+        fVistaActual = VIENDO_ARTICULOS
+        //btnEnEspera.visibility = View.GONE
         setRVArticulos(queGrupo)
     }
 
@@ -109,8 +111,27 @@ class ComandaActivity: AppCompatActivity() {
         return ArticulosDao.getArticulosGrupo(connInf, queGrupo)
     }
 
+    private fun prepararCuenta() {
+        fVistaActual = VIENDO_CUENTA
+        setRVCuenta()
+    }
+
+    private fun setRVCuenta() {
+        fAdptCuenta = CuentasRvAdapter(getLineasCuenta(),this, object: CuentasRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: ListaLineasCuenta) {
+
+            }
+        })
+
+        fRecycler.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun getLineasCuenta(): MutableList<ListaLineasCuenta> {
+        return CuentasDao.getLineasCuenta(connInf, fSala, fMesa)
+    }
+
     private fun vender(data: ListaArticulosGrupo) {
-        var resultado = true
+        //var resultado = true
 
         doAsync {
             val registro = DatosLinea()
@@ -120,16 +141,50 @@ class ComandaActivity: AppCompatActivity() {
             registro.linea = fLinea
             registro.orden = fLinea
             registro.articuloId = data.articuloId
+            registro.codigoArt = data.codigo
+            registro.descripcion = data.descripcion
+            registro.descrTicket = data.descrTicket
+            registro.cantidad = "1"
+            registro.usuario = 0
 
-
+            LineasDao.anyadirLinea(connGes, registro)
+            fLinea++
         }
 
         //fRecycler.adapter?.notifyDataSetChanged()
     }
 
-    fun volverAGrupos(view: View) {
-        view.getTag(0)          // Para que no dé warning el compilador
-        prepararGruposVta()
+
+    fun enEspera(view: View?) {
+        view?.getTag(0)          // Para que no dé warning el compilador
+
+        doAsync {
+            if (LineasDao.sinLineas(connInf, fSala, fMesa))
+                CuentasDao.borrarCuenta(connGes, fSala, fMesa)
+        }
+        finish()
     }
+
+    fun verCuenta(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+
+        prepararCuenta()
+    }
+
+    // Manejo los eventos del teclado en la actividad.
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+            if (fVistaActual == VIENDO_GRUPOS || fVistaActual == VIENDO_CUENTA)
+                enEspera(null)
+            else
+                prepararGruposVta()
+
+            return true
+        }
+        // Para las demás cosas, se reenvía el evento al listener habitual.
+        return super.onKeyDown(keyCode, event)
+    }
+
 
 }

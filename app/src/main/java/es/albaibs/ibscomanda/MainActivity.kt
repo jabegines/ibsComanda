@@ -8,11 +8,11 @@ import android.preference.PreferenceManager
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import es.albaibs.ibscomanda.Dao.SalasDao
-import es.albaibs.ibscomanda.Varios.Mensaje
-import es.albaibs.ibscomanda.Varios.Preferencias
-import es.albaibs.ibscomanda.Varios.ponerCeros
-import es.albaibs.ibscomanda.Ventas.ComandaActivity
+import es.albaibs.ibscomanda.dao.SalasDao
+import es.albaibs.ibscomanda.varios.Mensaje
+import es.albaibs.ibscomanda.varios.Preferencias
+import es.albaibs.ibscomanda.varios.ponerCeros
+import es.albaibs.ibscomanda.ventas.ComandaActivity
 import es.albaibs.ibscomanda.databinding.MainActivityBinding
 import kotlinx.android.synthetic.main.main_activity.*
 import org.jetbrains.anko.doAsync

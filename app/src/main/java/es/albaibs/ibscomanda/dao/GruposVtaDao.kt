@@ -1,7 +1,7 @@
-package es.albaibs.ibscomanda.Dao
+package es.albaibs.ibscomanda.dao
 
 import android.os.HandlerThread
-import es.albaibs.ibscomanda.Varios.ListaGruposVta
+import es.albaibs.ibscomanda.varios.ListaGruposVta
 import java.sql.Connection
 import java.sql.Statement
 import java.util.concurrent.CountDownLatch

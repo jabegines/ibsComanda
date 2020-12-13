@@ -23,12 +23,12 @@
         </activity>
 
         <activity
-            android:name=".Varios.Preferencias"
+            android:name=".varios.Preferencias"
             android:label="Configuración"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".Ventas.ComandaActivity"
+            android:name=".ventas.ComandaActivity"
             android:label="Comanda"
             android:screenOrientation="portrait">
         </activity>

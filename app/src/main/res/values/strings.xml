@@ -5,9 +5,12 @@
     <string name="comanda">Comanda</string>
     <string name="configuracion">Configuración</string>
     <string name="descripcion">Descripción</string>
+    <string name="en_espera">Espera</string>
     <string name="grupos">Grupos vta.</string>
+    <string name="importe">Importe</string>
     <string name="ultima_mesa">Ultima mesa:</string>
     <string name="ultima_sala">Ultima sala:</string>
+    <string name="ver_cuenta">Cuenta</string>
 
 
     <!-- Mensajes -->
