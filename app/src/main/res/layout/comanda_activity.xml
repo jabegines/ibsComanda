@@ -27,7 +27,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:drawableTop="@drawable/grupos"
+            android:drawableTop="@drawable/cuenta"
             android:onClick="verCuenta"
             android:text="@string/ver_cuenta"
             android:textAllCaps="false"

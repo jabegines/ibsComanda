@@ -32,7 +32,7 @@ class CuentasRvAdapter(var lineas: MutableList<ListaLineasCuenta>, val context: 
         return lineas.size
     }
 
-    fun setOnItemClickListener(listener: OnItemClickListener) {
+    private fun setOnItemClickListener(listener: OnItemClickListener) {
         this.listener = listener
     }
 
@@ -46,9 +46,13 @@ class CuentasRvAdapter(var lineas: MutableList<ListaLineasCuenta>, val context: 
         private val importe = itemView.findViewById(R.id.tvImporte) as TextView
 
         fun bind(linea: ListaLineasCuenta, context: Context) {
-            cantidad.text = linea.cantidad
+            val dCantidad = linea.cantidad.toDouble()
+            cantidad.text = String.format("%.0f", dCantidad)
+
             descripcion.text = linea.descripcion
-            importe.text = linea.importe
+
+            val dImporte = linea.importe.toDouble()
+            importe.text = String.format("%.2f", dImporte)
         }
     }
 

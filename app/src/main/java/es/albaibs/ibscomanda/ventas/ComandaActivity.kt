@@ -4,16 +4,19 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.DBConnection
+import es.albaibs.ibscomanda.R
 import es.albaibs.ibscomanda.dao.ArticulosDao
 import es.albaibs.ibscomanda.dao.CuentasDao
 import es.albaibs.ibscomanda.dao.GruposVtaDao
 import es.albaibs.ibscomanda.dao.LineasDao
 import es.albaibs.ibscomanda.databinding.ComandaActivityBinding
 import es.albaibs.ibscomanda.varios.*
+import kotlinx.android.synthetic.main.comanda_activity.*
 import org.jetbrains.anko.doAsync
 import java.sql.Connection
 
@@ -28,6 +31,8 @@ class ComandaActivity: AppCompatActivity() {
     private val connGes: Connection = DBConnection.connectionGES as Connection
 
     private var fVistaActual: Int  = 1
+    private var fVistaAnterior: Int = 1
+    private var fGrupoActual: Int = 0
     private var fSala: Short = 0
     private var fMesa: Short = 0
     private var fLinea: Int = 0
@@ -67,8 +72,10 @@ class ComandaActivity: AppCompatActivity() {
 
 
     private fun prepararGruposVta() {
+        fVistaAnterior = fVistaActual
         fVistaActual = VIENDO_GRUPOS
-        //btnEnEspera.visibility = View.VISIBLE
+        btnVerCuenta.setText(R.string.ver_cuenta)
+        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null), null, null)
         setRVGrupos()
     }
 
@@ -90,8 +97,11 @@ class ComandaActivity: AppCompatActivity() {
 
 
     private fun prepararArticulosGrupo(queGrupo: Int) {
+        fVistaAnterior = fVistaActual
         fVistaActual = VIENDO_ARTICULOS
-        //btnEnEspera.visibility = View.GONE
+        fGrupoActual = queGrupo
+        btnVerCuenta.setText(R.string.ver_cuenta)
+        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null), null, null)
         setRVArticulos(queGrupo)
     }
 
@@ -112,18 +122,21 @@ class ComandaActivity: AppCompatActivity() {
     }
 
     private fun prepararCuenta() {
+        fVistaAnterior = fVistaActual
         fVistaActual = VIENDO_CUENTA
+        btnVerCuenta.setText(R.string.vender)
+        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, ResourcesCompat.getDrawable(resources, R.drawable.vino, null), null, null)
         setRVCuenta()
     }
 
     private fun setRVCuenta() {
         fAdptCuenta = CuentasRvAdapter(getLineasCuenta(),this, object: CuentasRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: ListaLineasCuenta) {
-
             }
         })
 
         fRecycler.layoutManager = LinearLayoutManager(this)
+        fRecycler.adapter = fAdptCuenta
     }
 
     private fun getLineasCuenta(): MutableList<ListaLineasCuenta> {
@@ -168,17 +181,29 @@ class ComandaActivity: AppCompatActivity() {
     fun verCuenta(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
-        prepararCuenta()
+        if (fVistaActual == VIENDO_CUENTA)
+            if (fVistaAnterior == VIENDO_GRUPOS)
+                prepararGruposVta()
+            else
+                prepararArticulosGrupo(fGrupoActual)
+        else
+            prepararCuenta()
     }
 
     // Manejo los eventos del teclado en la actividad.
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
 
-            if (fVistaActual == VIENDO_GRUPOS || fVistaActual == VIENDO_CUENTA)
-                enEspera(null)
-            else
-                prepararGruposVta()
+            when (fVistaActual) {
+                VIENDO_GRUPOS -> enEspera(null)
+                VIENDO_CUENTA -> {
+                    if (fVistaAnterior == VIENDO_GRUPOS)
+                        prepararGruposVta()
+                    else
+                        prepararArticulosGrupo(fGrupoActual)
+                }
+                else -> prepararGruposVta()
+            }
 
             return true
         }
