@@ -8,6 +8,11 @@ const val VIENDO_ARTICULOS = 2
 const val VIENDO_CUENTA = 3
 
 
+class ListaSalas {
+    var salaId: Short = 0
+    var nombre: String = ""
+}
+
 class ListaGruposVta {
     var grupoId: Int = 0
     var descripcion: String = ""
