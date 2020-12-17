@@ -1,6 +1,7 @@
 package es.albaibs.ibscomanda.dao
 
 import android.os.HandlerThread
+import es.albaibs.ibscomanda.varios.ListaMesas
 import es.albaibs.ibscomanda.varios.ListaSalas
 import java.sql.Connection
 import java.sql.Statement
@@ -37,6 +38,35 @@ class SalasDao {
             uiThread.start()
             latch.await()
             return listaSalas
+        }
+
+
+        fun getMesasSala(conn: Connection, queSala: Short): MutableList<ListaMesas> {
+            val listaMesas = emptyList<ListaMesas>().toMutableList()
+            val comm: Statement = conn.createStatement()
+
+            val latch = CountDownLatch(1)
+            val uiThread = object : HandlerThread("UIHandler") {
+                override fun run() {
+                    try {
+                        val rs = comm.executeQuery("SELECT DISTINCT Mesa FROM HTDistribucionMesas" +
+                                " WHERE Sala = $queSala AND Tipo IN (1, 2, 3, 4, 100, 101, 102, 103, 104, 105, 106, 107)" +
+                                " ORDER BY Mesa")
+
+                        while (rs.next()) {
+                            val lista = ListaMesas()
+                            lista.mesaId = rs.getShort("Mesa")
+                            listaMesas.add(lista)
+                        }
+                        latch.countDown()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+            uiThread.start()
+            latch.await()
+            return listaMesas
         }
 
 

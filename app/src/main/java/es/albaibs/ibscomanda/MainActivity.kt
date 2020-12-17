@@ -12,12 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import es.albaibs.ibscomanda.dao.SalasDao
-import es.albaibs.ibscomanda.varios.Mensaje
-import es.albaibs.ibscomanda.varios.Preferencias
-import es.albaibs.ibscomanda.varios.ponerCeros
 import es.albaibs.ibscomanda.ventas.ComandaActivity
 import es.albaibs.ibscomanda.databinding.MainActivityBinding
-import es.albaibs.ibscomanda.varios.ListaSalas
+import es.albaibs.ibscomanda.varios.*
+import es.albaibs.ibscomanda.ventas.MesasRvAdapter
 import es.albaibs.ibscomanda.ventas.SalasRvAdapter
 import kotlinx.android.synthetic.main.main_activity.*
 import org.jetbrains.anko.doAsync
@@ -30,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private var connInf: Connection? = null
     private lateinit var fRecycler: RecyclerView
     private lateinit var fAdptSalas: SalasRvAdapter
+    private lateinit var fAdptMesas: MesasRvAdapter
 
     //private var fCuentas: MutableList<Cuentas> = arrayListOf()
     private lateinit var prefs: SharedPreferences
@@ -88,6 +87,7 @@ class MainActivity : AppCompatActivity() {
     private fun prepararSalas() {
         fAdptSalas = SalasRvAdapter(getSalas(), this, object: SalasRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: ListaSalas) {
+                prepararMesasSala(data)
             }
         })
 
@@ -100,6 +100,22 @@ class MainActivity : AppCompatActivity() {
         return SalasDao.getAllSalas(connInf!!)
     }
 
+
+    private fun prepararMesasSala(data: ListaSalas) {
+        fAdptMesas = MesasRvAdapter(getMesas(data), this, object: MesasRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: ListaMesas) {
+            }
+        })
+
+        fRecycler.layoutManager = GridLayoutManager(this, 2)
+        fRecycler.adapter = fAdptMesas
+        fAdptMesas.notifyDataSetChanged()
+    }
+
+
+    private fun getMesas(data: ListaSalas): MutableList<ListaMesas> {
+        return SalasDao.getMesasSala(connInf!!, data.salaId)
+    }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {

@@ -13,6 +13,10 @@ class ListaSalas {
     var nombre: String = ""
 }
 
+class ListaMesas {
+    var mesaId: Short = 0
+}
+
 class ListaGruposVta {
     var grupoId: Int = 0
     var descripcion: String = ""

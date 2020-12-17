@@ -4,31 +4,32 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.R
-import es.albaibs.ibscomanda.varios.ListaSalas
+import es.albaibs.ibscomanda.varios.ListaMesas
 
-class SalasRvAdapter(var salas: MutableList<ListaSalas>, val context: Context, var listener: OnItemClickListener): RecyclerView.Adapter<SalasRvAdapter.ViewHolder>() {
+class MesasRvAdapter(var mesas: MutableList<ListaMesas>, val context: Context, var listener: OnItemClickListener): RecyclerView.Adapter<MesasRvAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = salas[position]
+        val item = mesas[position]
         holder.bind(item, context)
 
         holder.itemView.setOnClickListener {
             notifyDataSetChanged()
-            listener.onClick(it, salas[position])
+            listener.onClick(it, mesas[position])
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         setOnItemClickListener(listener)
         val layoutInflater = LayoutInflater.from(parent.context)
-        return ViewHolder(layoutInflater.inflate(R.layout.item_salas_list, parent, false))
+        return ViewHolder(layoutInflater.inflate(R.layout.item_mesas_list, parent, false))
     }
 
     override fun getItemCount(): Int {
-        return salas.size
+        return mesas.size
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
@@ -36,17 +37,16 @@ class SalasRvAdapter(var salas: MutableList<ListaSalas>, val context: Context, v
     }
 
     interface OnItemClickListener {
-        fun onClick(view: View, data: ListaSalas)
+        fun onClick(view: View, data: ListaMesas)
     }
 
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        private val numero = itemView.findViewById(R.id.tvNumeroSala) as TextView
-        private val nombre = itemView.findViewById(R.id.tvNombreSala) as TextView
+        private val numero = itemView.findViewById(R.id.btnNumeroMesa) as Button
 
-        fun bind(sala: ListaSalas, context: Context) {
-            numero.text = sala.salaId.toString()
-            nombre.text = sala.nombre
+        fun bind(mesa: ListaMesas, context: Context) {
+            numero.text = mesa.mesaId.toString()
         }
     }
+
 }
