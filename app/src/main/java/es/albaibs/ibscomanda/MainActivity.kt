@@ -21,6 +21,7 @@ import es.albaibs.ibscomanda.varios.ListaSalas
 import es.albaibs.ibscomanda.ventas.SalasRvAdapter
 import kotlinx.android.synthetic.main.main_activity.*
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.sql.Connection
 
 
@@ -165,7 +166,10 @@ class MainActivity : AppCompatActivity() {
                 if (connInf == null) connInf = DBConnection.conectar(this@MainActivity, true)
 
                 if (connInf != null) {
-                    prepararSalas()
+                    uiThread {
+                        prepararSalas()
+                    }
+
                     //if (!conn!!.isClosed) {
 
                         //fCuentas = CuentasDao.getAllCuentas(conn!!, fPrefijo, fSistema)
