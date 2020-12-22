@@ -36,6 +36,8 @@ class MainActivity : AppCompatActivity() {
     private var fPrefijo: String = ""
     private var fSistema: String = ""
 
+    private var fUltimaSala: Short = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,16 +71,15 @@ class MainActivity : AppCompatActivity() {
             ex.printStackTrace()
         }
 
-        //prefs.edit().putString("ultima_sala", edtUltimaSala.text.toString()).apply()
-        //prefs.edit().putString("ultima_mesa", edtUltimaMesa.text.toString()).apply()
+        prefs.edit().putString("ultima_sala", fUltimaSala.toString()).apply()
 
         super.onDestroy()
     }
 
 
     private fun inicializarControles() {
-        //edtUltimaSala.setText(prefs.getString("ultima_sala", "") ?: "")
-        //edtUltimaMesa.setText(prefs.getString("ultima_mesa", "") ?: "")
+        val queSala = prefs.getString("ultima_sala", "0") ?: "0"
+        fUltimaSala = queSala.toShort()
 
         fRecycler = binding.rvMain
     }
@@ -107,7 +108,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        fRecycler.layoutManager = GridLayoutManager(this, 2)
+        fRecycler.layoutManager = GridLayoutManager(this, 4)
         fRecycler.adapter = fAdptMesas
         fAdptMesas.notifyDataSetChanged()
     }

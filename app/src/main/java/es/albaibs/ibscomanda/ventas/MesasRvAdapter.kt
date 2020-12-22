@@ -42,7 +42,8 @@ class MesasRvAdapter(var mesas: MutableList<ListaMesas>, val context: Context, v
 
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        private val numero = itemView.findViewById(R.id.btnNumeroMesa) as Button
+        //private val numero = itemView.findViewById(R.id.btnNumeroMesa) as Button
+        private val numero = itemView.findViewById(R.id.tvNumeroMesa) as TextView
 
         fun bind(mesa: ListaMesas, context: Context) {
             numero.text = mesa.mesaId.toString()
