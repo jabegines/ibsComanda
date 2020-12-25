@@ -10,6 +10,8 @@
     <string name="importe">Importe</string>
     <string name="mesa">Mesa</string>
     <string name="numero_uno">1</string>
+    <string name="sala">Sala: </string>
+    <string name="salas">Salas</string>
     <string name="ultima_mesa">Ultima mesa:</string>
     <string name="ultima_sala">Ultima sala:</string>
     <string name="vender">Vender</string>

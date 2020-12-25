@@ -18,6 +18,7 @@ import es.albaibs.ibscomanda.varios.*
 import es.albaibs.ibscomanda.ventas.MesasRvAdapter
 import es.albaibs.ibscomanda.ventas.SalasRvAdapter
 import kotlinx.android.synthetic.main.main_activity.*
+import kotlinx.android.synthetic.main.main_activity.view.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.sql.Connection
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     private var fSistema: String = ""
 
     private var fUltimaSala: Short = 0
+    private var fNombreUltSala: String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         prefs.edit().putString("ultima_sala", fUltimaSala.toString()).apply()
+        prefs.edit().putString("nombre_ult_sala", fNombreUltSala).apply()
 
         super.onDestroy()
     }
@@ -79,7 +82,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun inicializarControles() {
         val queSala = prefs.getString("ultima_sala", "0") ?: "0"
+        val queNombre = prefs.getString("nombre_ult_sala", "") ?: ""
         fUltimaSala = queSala.toShort()
+        fNombreUltSala = queNombre
 
         fRecycler = binding.rvMain
     }
@@ -88,13 +93,18 @@ class MainActivity : AppCompatActivity() {
     private fun prepararSalas() {
         fAdptSalas = SalasRvAdapter(getSalas(), this, object: SalasRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: ListaSalas) {
-                prepararMesasSala(data)
+                fUltimaSala = data.salaId
+                fNombreUltSala= data.nombre
+                prepararMesasSala(data.salaId, data.nombre)
             }
         })
 
         fRecycler.layoutManager = LinearLayoutManager(this)
         fRecycler.adapter = fAdptSalas
         fAdptSalas.notifyDataSetChanged()
+
+        binding.tvTitulos.text = getString(R.string.salas)
+        binding.navigation.navigation.menu.getItem(1).isVisible = false
     }
 
     private fun getSalas(): MutableList<ListaSalas> {
@@ -102,20 +112,29 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun prepararMesasSala(data: ListaSalas) {
-        fAdptMesas = MesasRvAdapter(getMesas(data), this, object: MesasRvAdapter.OnItemClickListener {
+    private fun prepararMesasSala(salaId: Short, nombreSala: String) {
+        fAdptMesas = MesasRvAdapter(getMesas(salaId), this, object: MesasRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: ListaMesas) {
+
+                val i = Intent(this@MainActivity, ComandaActivity::class.java)
+                i.putExtra("sala", salaId.toString())
+                i.putExtra("mesa", data.mesaId.toString())
+                startActivity(i)
             }
         })
 
         fRecycler.layoutManager = GridLayoutManager(this, 4)
         fRecycler.adapter = fAdptMesas
         fAdptMesas.notifyDataSetChanged()
+
+        val queSala = getString(R.string.sala) + " " + nombreSala
+        binding.tvTitulos.text = queSala
+        binding.navigation.navigation.menu.getItem(1).isVisible = true
     }
 
 
-    private fun getMesas(data: ListaSalas): MutableList<ListaMesas> {
-        return SalasDao.getMesasSala(connInf!!, data.salaId)
+    private fun getMesas(salaId: Short): MutableList<ListaMesas> {
+        return SalasDao.getMesasSala(connInf!!, salaId)
     }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -126,52 +145,13 @@ class MainActivity : AppCompatActivity() {
 
                 return@OnNavigationItemSelectedListener true
             }
+            R.id.navigation_salas -> {
+                prepararSalas()
+            }
         }
         false
     }
 
-
-    fun lanzarComanda(view: View) {
-        view.getTag(0)          // Para que no dé warning el compilador
-        var continuar = true
-        /*
-        if (edtUltimaSala.text.toString() == "") {
-            Mensaje(this, getString(R.string.sin_sala))
-            continuar = false
-        }
-
-        if (edtUltimaMesa.text.toString() == "") {
-            Mensaje(this, getString(R.string.sin_mesa))
-            continuar = false
-        }
-
-        if (continuar) {
-            doAsync {
-                if (SalasDao.existeSala(connInf!!, edtUltimaSala.text.toString().toInt())) {
-
-                    if (SalasDao.existeMesa(connInf!!, edtUltimaSala.text.toString().toInt(), edtUltimaMesa.text.toString().toInt())) {
-
-                        val i = Intent(this@MainActivity, ComandaActivity::class.java)
-                        i.putExtra("sala", edtUltimaSala.text.toString())
-                        i.putExtra("mesa", edtUltimaMesa.text.toString())
-                        startActivity(i)
-
-                    } else {
-                        uiThread {
-                            Mensaje(this@MainActivity, getString(R.string.mesa_no_existe))
-                        }
-                    }
-
-                } else {
-                    uiThread {
-                        Mensaje(this@MainActivity, getString(R.string.sala_no_existe))
-                    }
-                }
-
-            }
-        }
-        */
-    }
 
 
 
@@ -184,14 +164,9 @@ class MainActivity : AppCompatActivity() {
 
                 if (connInf != null) {
                     uiThread {
-                        prepararSalas()
+                        if (fUltimaSala > 0) prepararMesasSala(fUltimaSala, fNombreUltSala)
+                        else prepararSalas()
                     }
-
-                    //if (!conn!!.isClosed) {
-
-                        //fCuentas = CuentasDao.getAllCuentas(conn!!, fPrefijo, fSistema)
-                        //fModificadores = CuentasDao.getModificadores(conn!!, fCuentas)
-                    //}
 
                 } else {
                     Mensaje(this@MainActivity, "Error al conectar, revise las conexiones")

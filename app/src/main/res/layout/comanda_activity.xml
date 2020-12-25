@@ -10,7 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/llBotones"
-        app:layout_constraintTop_toTopOf="parent"></androidx.recyclerview.widget.RecyclerView>
+        app:layout_constraintTop_toTopOf="parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 
     <LinearLayout
@@ -22,10 +24,22 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
+            android:id="@+id/btnMesa"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.1"
+            android:background="#FFFFFF"
+            android:lines="2"
+            android:text="@string/mesa"
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <Button
             android:id="@+id/btnVerCuenta"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.45"
             android:background="#FFFFFF"
             android:drawableTop="@drawable/cuenta"
             android:onClick="verCuenta"
@@ -39,7 +53,7 @@
             android:id="@+id/btnEnEspera"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.45"
             android:background="#FFFFFF"
             android:drawableTop="@drawable/espera"
             android:onClick="enEspera"

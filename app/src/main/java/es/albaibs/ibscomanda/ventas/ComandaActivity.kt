@@ -53,6 +53,8 @@ class ComandaActivity: AppCompatActivity() {
 
 
     private fun inicializarControles() {
+        binding.btnMesa.text = fMesa.toString()
+
         // Comprobamos si hay alguna linea en la cuenta, en cuyo caso actualizamos fLinea. Si no, añadimos a la cabecera.
         doAsync {
             fLinea = LineasDao.getUltimaLinea(connGes, fSala, fMesa)
