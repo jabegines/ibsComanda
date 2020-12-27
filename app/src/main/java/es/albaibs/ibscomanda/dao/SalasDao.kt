@@ -49,13 +49,15 @@ class SalasDao {
             val uiThread = object : HandlerThread("UIHandler") {
                 override fun run() {
                     try {
-                        val rs = comm.executeQuery("SELECT DISTINCT Mesa FROM HTDistribucionMesas" +
-                                " WHERE Sala = $queSala AND Tipo IN (1, 2, 3, 4, 100, 101, 102, 103, 104, 105, 106, 107)" +
-                                " ORDER BY Mesa")
+                        val rs = comm.executeQuery("SELECT DISTINCT A.Mesa, B.Sala FROM HTDistribucionMesas A" +
+                                " LEFT JOIN HTLineasCuentas B ON B.Sala = A.Sala AND B.Mesa = A.Mesa" +
+                                " WHERE A.Sala = $queSala AND A.Tipo IN (1, 2, 3, 4, 100, 101, 102, 103, 104, 105, 106, 107)" +
+                                " ORDER BY A.Mesa")
 
                         while (rs.next()) {
                             val lista = ListaMesas()
                             lista.mesaId = rs.getShort("Mesa")
+                            lista.ocupada = rs.getString("Sala") != null
                             listaMesas.add(lista)
                         }
                         latch.countDown()

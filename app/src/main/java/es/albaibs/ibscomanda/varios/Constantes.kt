@@ -16,8 +16,6 @@ class ListaSalas {
 class ListaMesas {
     var mesaId: Short = 0
     var ocupada: Boolean = false
-
-    aquí me quedé, para indicar si la mesa está ocupada o no
 }
 
 class ListaGruposVta {

@@ -1,6 +1,7 @@
 package es.albaibs.ibscomanda.ventas
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.R
 import es.albaibs.ibscomanda.varios.ListaMesas
+import org.jetbrains.anko.textColor
 
 class MesasRvAdapter(var mesas: MutableList<ListaMesas>, val context: Context, var listener: OnItemClickListener): RecyclerView.Adapter<MesasRvAdapter.ViewHolder>() {
 
@@ -46,6 +48,9 @@ class MesasRvAdapter(var mesas: MutableList<ListaMesas>, val context: Context, v
         private val numero = itemView.findViewById(R.id.tvNumeroMesa) as TextView
 
         fun bind(mesa: ListaMesas, context: Context) {
+            if (mesa.ocupada) {
+                numero.textColor = Color.RED
+            }
             numero.text = mesa.mesaId.toString()
         }
     }
