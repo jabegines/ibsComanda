@@ -67,6 +67,9 @@ class DatosLinea {
     var descripcion: String = ""
     var descrTicket: String = ""
     var cantidad: String = ""
+    var piezas: String = ""
+    var precio: String = ""
+    var importe: String = ""
     var usuario: Short = 0
 }
 

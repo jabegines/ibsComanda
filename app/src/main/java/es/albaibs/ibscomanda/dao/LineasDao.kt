@@ -43,11 +43,12 @@ class LineasDao {
             val comm: Statement = conn.createStatement()
 
             return try {
-                comm.execute("INSERT INTO HTLineasCuentas (Sala, Mesa, Fraccion, Linea, Orden, Articulo, Codigo, Descripcion, DescrTicket, Cantidad, Usuario)" +
+                comm.execute("INSERT INTO HTLineasCuentas (Sala, Mesa, Fraccion, Linea, Orden, Articulo, Codigo, Descripcion, DescrTicket," +
+                        " Cantidad, Piezas, Precio, Importe, Usuario)" +
                         " VALUES (" + registro.sala + ", " + registro.mesa + ", " + registro.fraccion + "," + registro.linea +
                         ", " + registro.orden + ", " + registro.articuloId + ", " + registro.codigoArt + ", '" + registro.descripcion +
-                        "', '" + registro.descrTicket + "', " + registro.cantidad + ", " + registro.usuario +
-                        ")")
+                        "', '" + registro.descrTicket + "', " + registro.cantidad + ", " + registro.piezas + ", " + registro.precio +
+                        ", " + registro.importe + ", " + registro.usuario + ")")
 
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -10,10 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.DBConnection
 import es.albaibs.ibscomanda.R
-import es.albaibs.ibscomanda.dao.ArticulosDao
-import es.albaibs.ibscomanda.dao.CuentasDao
-import es.albaibs.ibscomanda.dao.GruposVtaDao
-import es.albaibs.ibscomanda.dao.LineasDao
+import es.albaibs.ibscomanda.dao.*
 import es.albaibs.ibscomanda.databinding.ComandaActivityBinding
 import es.albaibs.ibscomanda.varios.*
 import kotlinx.android.synthetic.main.comanda_activity.*
@@ -36,6 +33,7 @@ class ComandaActivity: AppCompatActivity() {
     private var fSala: Short = 0
     private var fMesa: Short = 0
     private var fLinea: Int = 0
+    private var fTarifa: Int = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +41,7 @@ class ComandaActivity: AppCompatActivity() {
         binding = ComandaActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        fTarifa = ConfiguracionesDao.getEntero(connInf, "HOSTELERIA", "TARIFAPRECIOS")
         val i = intent
         fSala = i.getStringExtra("sala").toShort()
         fMesa = i.getStringExtra("mesa").toShort()
@@ -160,6 +159,9 @@ class ComandaActivity: AppCompatActivity() {
             registro.descripcion = data.descripcion
             registro.descrTicket = data.descrTicket
             registro.cantidad = "1"
+            registro.piezas = "0"
+            registro.precio = dimePrecioArt(data.articuloId)
+            registro.importe = calculaImporte(registro)
             registro.usuario = 0
 
             LineasDao.anyadirLinea(connGes, registro)
@@ -169,6 +171,22 @@ class ComandaActivity: AppCompatActivity() {
         //fRecycler.adapter?.notifyDataSetChanged()
     }
 
+
+    private fun calculaImporte(registro: DatosLinea): String {
+        val dCantidad = registro.cantidad.toDouble()
+        val dPrecio = registro.precio.replace(",", ".").toDouble()
+
+        val dImporte = redondear((dCantidad * dPrecio), 2)
+
+        return dImporte.toString()
+    }
+
+    private fun dimePrecioArt(articuloId: Int): String {
+        var quePrecio = TarifasDao.getPrecio(connInf, fTarifa, articuloId)
+        if (quePrecio == "") quePrecio = "0.0"
+
+        return quePrecio
+    }
 
     fun enEspera(view: View?) {
         view?.getTag(0)          // Para que no dé warning el compilador

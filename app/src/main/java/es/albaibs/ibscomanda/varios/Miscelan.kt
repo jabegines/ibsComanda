@@ -3,7 +3,10 @@ package es.albaibs.ibscomanda.varios
 import android.content.Context
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.okButton
+import java.math.RoundingMode
 import java.security.MessageDigest
+import java.text.NumberFormat
+import kotlin.math.pow
 
 
 fun ponerCeros(cadena: String, longitud: Byte): String {
@@ -51,3 +54,29 @@ object HashUtils {
     }
 }
 
+
+fun redondear(dNumero: Double, iDecimales: Int): Double {
+    val dDecimales = (iDecimales * 1.0) + 1
+
+    val numberFormat = NumberFormat.getInstance()
+    numberFormat.maximumFractionDigits = 0
+    numberFormat.roundingMode = RoundingMode.DOWN
+
+    val sPrecision = numberFormat.format(10.0.pow(dDecimales)).replace(".", "").replace(",", "")
+    val iPrecision = sPrecision.toInt()
+    val sRedondeo = numberFormat.format(dNumero * iPrecision).replace(".", "").replace(",", "")
+
+    var iRedondeo = sRedondeo.toInt()
+    val iAux = iRedondeo % 10
+
+    iRedondeo =
+        if (iAux >= 0) {
+            if (iAux >= 5) iRedondeo + 10 - iAux
+            else iRedondeo - iAux
+        } else {
+            if (iAux <= -5) iRedondeo -10 - iAux
+            else iRedondeo - iAux
+        }
+
+    return iRedondeo.toDouble() / iPrecision
+}
