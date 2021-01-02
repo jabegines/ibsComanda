@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import es.albaibs.ibscomanda.dao.SalasDao
 import es.albaibs.ibscomanda.ventas.ComandaActivity
 import es.albaibs.ibscomanda.databinding.MainActivityBinding
@@ -47,7 +46,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         // Esta configuración sirve para poder usar imágenes vectoriales con versiones antiguas de android (4.4, etc.)
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         fPrefijo = prefs.getString("prefijo", "") ?: ""
@@ -91,6 +89,9 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun prepararSalas() {
+        binding.btnConfiguracion.visibility = View.VISIBLE
+        binding.btnSalas.visibility = View.GONE
+
         fAdptSalas = SalasRvAdapter(getSalas(), this, object: SalasRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: ListaSalas) {
                 fUltimaSala = data.salaId
@@ -104,7 +105,6 @@ class MainActivity : AppCompatActivity() {
         fAdptSalas.notifyDataSetChanged()
 
         binding.tvTitulos.text = getString(R.string.salas)
-        binding.navigation.navigation.menu.getItem(1).isVisible = false
     }
 
     private fun getSalas(): MutableList<ListaSalas> {
@@ -113,6 +113,9 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun prepararMesasSala(salaId: Short, nombreSala: String) {
+        binding.btnConfiguracion.visibility = View.GONE
+        binding.btnSalas.visibility = View.VISIBLE
+
         fAdptMesas = MesasRvAdapter(getMesas(salaId), this, object: MesasRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: ListaMesas) {
 
@@ -129,7 +132,6 @@ class MainActivity : AppCompatActivity() {
 
         val queSala = getString(R.string.sala) + " " + nombreSala
         binding.tvTitulos.text = queSala
-        binding.navigation.navigation.menu.getItem(1).isVisible = true
     }
 
 
@@ -137,23 +139,20 @@ class MainActivity : AppCompatActivity() {
         return SalasDao.getMesasSala(connInf!!, salaId)
     }
 
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.navigation_configuracion -> {
-                val i = Intent(this, Preferencias::class.java)
-                startActivity(i)
 
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_salas -> {
-                prepararSalas()
-            }
-        }
-        false
+
+    fun configuracion(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+
+        val i = Intent(this, Preferencias::class.java)
+        startActivity(i)
     }
 
+    fun verSalas(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
 
-
+        prepararSalas()
+    }
 
     private fun conectarABD() {
 

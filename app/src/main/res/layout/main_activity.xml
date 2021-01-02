@@ -21,7 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/salas"
-            android:textSize="16sp"
+            android:textColor="#000000"
+            android:textSize="24sp"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -29,21 +30,49 @@
         android:id="@+id/rvMain"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/navigation"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toTopOf="@id/llBotonesMain"
         app:layout_constraintTop_toBottomOf="@id/lyTitulos"
         tools:layout_editor_absoluteX="5dp">
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navigation"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/llBotonesMain"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/nv_main" />
+        android:background="#FFFFFF"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/btnConfiguracion"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.30"
+            android:background="#FFFFFF"
+            android:drawableTop="@drawable/configuracion"
+            android:onClick="configuracion"
+            android:text="@string/configuracion"
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnSalas"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.30"
+            android:background="#FFFFFF"
+            android:drawableTop="@drawable/salas"
+            android:onClick="verSalas"
+            android:text="@string/salas"
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

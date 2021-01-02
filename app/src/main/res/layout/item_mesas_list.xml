@@ -5,7 +5,7 @@
     android:layout_width="70dp"
     android:layout_height="70dp"
     android:layout_margin="10dp"
-    android:background="#FFFFFF"
+    android:background="@drawable/mi_borde"
     android:orientation="vertical"
     android:padding="5dp">
 

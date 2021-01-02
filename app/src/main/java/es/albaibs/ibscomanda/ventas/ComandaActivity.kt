@@ -75,6 +75,7 @@ class ComandaActivity: AppCompatActivity() {
     private fun prepararGruposVta() {
         fVistaAnterior = fVistaActual
         fVistaActual = VIENDO_GRUPOS
+        binding.btnGrupos.visibility = View.GONE
         btnVerCuenta.setText(R.string.ver_cuenta)
         btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null), null, null)
         setRVGrupos()
@@ -101,6 +102,7 @@ class ComandaActivity: AppCompatActivity() {
         fVistaAnterior = fVistaActual
         fVistaActual = VIENDO_ARTICULOS
         fGrupoActual = queGrupo
+        binding.btnGrupos.visibility = View.VISIBLE
         btnVerCuenta.setText(R.string.ver_cuenta)
         btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null), null, null)
         setRVArticulos(queGrupo)
@@ -186,6 +188,11 @@ class ComandaActivity: AppCompatActivity() {
         if (quePrecio == "") quePrecio = "0.0"
 
         return quePrecio
+    }
+
+    fun verGrupos(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+        prepararGruposVta()
     }
 
     fun enEspera(view: View?) {
