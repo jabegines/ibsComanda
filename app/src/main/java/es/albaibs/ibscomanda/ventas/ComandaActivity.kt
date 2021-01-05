@@ -1,5 +1,7 @@
 package es.albaibs.ibscomanda.ventas
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -75,9 +77,10 @@ class ComandaActivity: AppCompatActivity() {
     private fun prepararGruposVta() {
         fVistaAnterior = fVistaActual
         fVistaActual = VIENDO_GRUPOS
-        binding.btnGrupos.visibility = View.GONE
-        btnVerCuenta.setText(R.string.ver_cuenta)
-        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null), null, null)
+        //binding.btnGrupos.visibility = View.
+        //btnVerCuenta.setText(R.string.ver_cuenta)
+        btnGrupos.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null))
         setRVGrupos()
     }
 
@@ -88,7 +91,7 @@ class ComandaActivity: AppCompatActivity() {
                 }
             })
 
-        fRecycler.layoutManager = GridLayoutManager(this, 3)
+        fRecycler.layoutManager = GridLayoutManager(this, 4)
         fRecycler.adapter = fAdptGrupos
     }
 
@@ -102,9 +105,10 @@ class ComandaActivity: AppCompatActivity() {
         fVistaAnterior = fVistaActual
         fVistaActual = VIENDO_ARTICULOS
         fGrupoActual = queGrupo
-        binding.btnGrupos.visibility = View.VISIBLE
-        btnVerCuenta.setText(R.string.ver_cuenta)
-        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null), null, null)
+        //binding.btnGrupos.visibility = View.VISIBLE
+        //btnVerCuenta.setText(R.string.ver_cuenta)
+        btnGrupos.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.grupos, null))
+        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null))
         setRVArticulos(queGrupo)
     }
 
@@ -116,7 +120,7 @@ class ComandaActivity: AppCompatActivity() {
                 }
             })
 
-        fRecycler.layoutManager = GridLayoutManager(this, 3)
+        fRecycler.layoutManager = GridLayoutManager(this, 5)
         fRecycler.adapter = fAdptArticulos
     }
 
@@ -127,8 +131,8 @@ class ComandaActivity: AppCompatActivity() {
     private fun prepararCuenta() {
         fVistaAnterior = fVistaActual
         fVistaActual = VIENDO_CUENTA
-        btnVerCuenta.setText(R.string.vender)
-        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, ResourcesCompat.getDrawable(resources, R.drawable.vino, null), null, null)
+        //btnVerCuenta.setText(R.string.vender)
+        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.vino, null))
         setRVCuenta()
     }
 
@@ -237,6 +241,7 @@ class ComandaActivity: AppCompatActivity() {
         // Para las demás cosas, se reenvía el evento al listener habitual.
         return super.onKeyDown(keyCode, event)
     }
+
 
 
 }

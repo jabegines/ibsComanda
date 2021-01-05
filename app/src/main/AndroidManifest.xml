@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="sensorLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -25,12 +25,12 @@
         <activity
             android:name=".varios.Preferencias"
             android:label="Configuración"
-            android:screenOrientation="portrait">
+            android:screenOrientation="sensorLandscape">
         </activity>
         <activity
             android:name=".ventas.ComandaActivity"
             android:label="Comanda"
-            android:screenOrientation="portrait">
+            android:screenOrientation="sensorLandscape">
         </activity>
     </application>
 

@@ -1,5 +1,6 @@
 package es.albaibs.ibscomanda
 
+import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +9,6 @@ import android.preference.PreferenceManager
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.dao.SalasDao
 import es.albaibs.ibscomanda.ventas.ComandaActivity
@@ -38,6 +38,9 @@ class MainActivity : AppCompatActivity() {
 
     private var fUltimaSala: Short = 0
     private var fNombreUltSala: String = ""
+
+
+    private val fRequestVender = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,7 +103,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        fRecycler.layoutManager = LinearLayoutManager(this)
+        fRecycler.layoutManager = GridLayoutManager(this, 2)
         fRecycler.adapter = fAdptSalas
         fAdptSalas.notifyDataSetChanged()
 
@@ -122,11 +125,11 @@ class MainActivity : AppCompatActivity() {
                 val i = Intent(this@MainActivity, ComandaActivity::class.java)
                 i.putExtra("sala", salaId.toString())
                 i.putExtra("mesa", data.mesaId.toString())
-                startActivity(i)
+                startActivityForResult(i, fRequestVender)
             }
         })
 
-        fRecycler.layoutManager = GridLayoutManager(this, 4)
+        fRecycler.layoutManager = GridLayoutManager(this, 8)
         fRecycler.adapter = fAdptMesas
         fAdptMesas.notifyDataSetChanged()
 
@@ -176,6 +179,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // Buscar ruta.
+        if (requestCode == fRequestVender) {
+            if (resultCode == Activity.RESULT_OK) {
+                //fRecycler.adapter?.notifyDataSetChanged()
+
+            }
+        }
+    }
+
 
 
 }
