@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.R
@@ -44,7 +43,6 @@ class MesasRvAdapter(var mesas: MutableList<ListaMesas>, val context: Context, v
 
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        //private val numero = itemView.findViewById(R.id.btnNumeroMesa) as Button
         private val numero = itemView.findViewById(R.id.tvNumeroMesa) as TextView
 
         fun bind(mesa: ListaMesas, context: Context) {

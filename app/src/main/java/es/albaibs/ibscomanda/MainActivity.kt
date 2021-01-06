@@ -183,11 +183,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        // Buscar ruta.
+
         if (requestCode == fRequestVender) {
             if (resultCode == Activity.RESULT_OK) {
-                //fRecycler.adapter?.notifyDataSetChanged()
-
+                prepararMesasSala(fUltimaSala, fNombreUltSala)
             }
         }
     }

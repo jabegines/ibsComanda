@@ -1,6 +1,5 @@
 package es.albaibs.ibscomanda.ventas
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
@@ -80,12 +79,21 @@ class ComandaActivity: AppCompatActivity() {
         //binding.btnGrupos.visibility = View.
         //btnVerCuenta.setText(R.string.ver_cuenta)
         btnGrupos.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
-        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null))
+        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(
+            null, null, null, ResourcesCompat.getDrawable(
+                resources,
+                R.drawable.cuenta,
+                null
+            )
+        )
         setRVGrupos()
     }
 
     private fun setRVGrupos() {
-        fAdptGrupos = GruposVtaRvAdapter(getGrupos(), this, object : GruposVtaRvAdapter.OnItemClickListener {
+        fAdptGrupos = GruposVtaRvAdapter(
+            getGrupos(),
+            this,
+            object : GruposVtaRvAdapter.OnItemClickListener {
                 override fun onClick(view: View, data: ListaGruposVta) {
                     prepararArticulosGrupo(data.grupoId)
                 }
@@ -107,14 +115,29 @@ class ComandaActivity: AppCompatActivity() {
         fGrupoActual = queGrupo
         //binding.btnGrupos.visibility = View.VISIBLE
         //btnVerCuenta.setText(R.string.ver_cuenta)
-        btnGrupos.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.grupos, null))
-        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null))
+        btnGrupos.setCompoundDrawablesWithIntrinsicBounds(
+            null, null, null, ResourcesCompat.getDrawable(
+                resources,
+                R.drawable.grupos,
+                null
+            )
+        )
+        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(
+            null, null, null, ResourcesCompat.getDrawable(
+                resources,
+                R.drawable.cuenta,
+                null
+            )
+        )
         setRVArticulos(queGrupo)
     }
 
 
     private fun setRVArticulos(queGrupo: Int) {
-        fAdptArticulos = ArticulosGrupoRvAdapter(getArticulos(queGrupo), this, object : ArticulosGrupoRvAdapter.OnItemClickListener {
+        fAdptArticulos = ArticulosGrupoRvAdapter(
+            getArticulos(queGrupo),
+            this,
+            object : ArticulosGrupoRvAdapter.OnItemClickListener {
                 override fun onClick(view: View, data: ListaArticulosGrupo) {
                     vender(data)
                 }
@@ -132,15 +155,24 @@ class ComandaActivity: AppCompatActivity() {
         fVistaAnterior = fVistaActual
         fVistaActual = VIENDO_CUENTA
         //btnVerCuenta.setText(R.string.vender)
-        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.vino, null))
+        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(
+            null, null, null, ResourcesCompat.getDrawable(
+                resources,
+                R.drawable.vino,
+                null
+            )
+        )
         setRVCuenta()
     }
 
     private fun setRVCuenta() {
-        fAdptCuenta = CuentasRvAdapter(getLineasCuenta(),this, object: CuentasRvAdapter.OnItemClickListener {
-            override fun onClick(view: View, data: ListaLineasCuenta) {
-            }
-        })
+        fAdptCuenta = CuentasRvAdapter(
+            getLineasCuenta(),
+            this,
+            object : CuentasRvAdapter.OnItemClickListener {
+                override fun onClick(view: View, data: ListaLineasCuenta) {
+                }
+            })
 
         fRecycler.layoutManager = LinearLayoutManager(this)
         fRecycler.adapter = fAdptCuenta
@@ -206,6 +238,9 @@ class ComandaActivity: AppCompatActivity() {
             if (LineasDao.sinLineas(connInf, fSala, fMesa))
                 CuentasDao.borrarCuenta(connGes, fSala, fMesa)
         }
+
+        val returnIntent = Intent()
+        setResult(RESULT_OK, returnIntent)
         finish()
     }
 
