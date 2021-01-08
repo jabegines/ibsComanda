@@ -209,6 +209,22 @@ class ComandaActivity: AppCompatActivity() {
         //fRecycler.adapter?.notifyDataSetChanged()
     }
 
+    fun anyadirCant(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+
+        doAsync {
+            LineasDao.actualizarCantidad(connGes, fSala, fMesa, 0, fLinea-1, 1)
+        }
+    }
+
+    fun restarCant(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+
+        doAsync {
+            LineasDao.actualizarCantidad(connGes, fSala, fMesa, 0, fLinea-1, -1)
+        }
+    }
+
 
     private fun calculaImporte(registro: DatosLinea): String {
         val dCantidad = registro.cantidad.toDouble()
@@ -235,13 +251,21 @@ class ComandaActivity: AppCompatActivity() {
         view?.getTag(0)          // Para que no dé warning el compilador
 
         doAsync {
-            if (LineasDao.sinLineas(connInf, fSala, fMesa))
+            if (LineasDao.sinLineas(connInf, fSala, fMesa)) {
                 CuentasDao.borrarCuenta(connGes, fSala, fMesa)
+            } else {
+                imprimirCocina()
+            }
         }
 
         val returnIntent = Intent()
         setResult(RESULT_OK, returnIntent)
         finish()
+    }
+
+    private fun imprimirCocina() {
+        val lDatosCocina = LineasDao.consultaCocina(connInf, fSala, fMesa, 0)
+
     }
 
     fun verCuenta(view: View) {
@@ -255,6 +279,7 @@ class ComandaActivity: AppCompatActivity() {
         else
             prepararCuenta()
     }
+
 
     // Manejo los eventos del teclado en la actividad.
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {

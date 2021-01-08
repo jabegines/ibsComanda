@@ -73,3 +73,15 @@ class DatosLinea {
     var usuario: Short = 0
 }
 
+
+class DatosCocina {
+    var articuloId: Int = 0
+    var linea: Int = 0
+    var descripcion: String = ""
+    var descrTicket: String = ""
+    var cantidad: String = ""
+    var piezas: String = ""
+    var flag: Short = 0
+    var situacion: Short = 0
+    var orden: Int = 0
+}

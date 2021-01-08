@@ -47,6 +47,26 @@
             android:onClick="verCuenta" />
 
         <Button
+            android:id="@+id/btnAnyadir"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.10"
+            android:background="#FFFFFF"
+            android:drawableBottom="@drawable/anyadir"
+            android:gravity="left|center_vertical"
+            android:onClick="anyadirCant" />
+
+        <Button
+            android:id="@+id/btnRestar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.10"
+            android:background="#FFFFFF"
+            android:drawableBottom="@drawable/restar"
+            android:gravity="left|center_vertical"
+            android:onClick="restarCant" />
+
+        <Button
             android:id="@+id/btnEnEspera"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
