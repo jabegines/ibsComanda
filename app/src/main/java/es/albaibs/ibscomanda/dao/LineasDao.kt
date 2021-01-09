@@ -84,8 +84,8 @@ class LineasDao {
                             "SELECT A.Articulo, A.Linea, A.Descripcion, A.Cantidad, A.Piezas, A.Flag, B.Situacion, A.Orden" +
                                     " FROM HTLineasCuentas A, HTSituacionesArticulo B" +
                                     " WHERE A.Articulo = B.Articulo" +
-                                    " AND A.Sala = $fSala AND Mesa = $fMesa AMD Fraccion = $fFraccion" +
-                                    " AND (A.Flag & 8) = 0 OR A.Flag & 32 <> 0)" +
+                                    " AND A.Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion" +
+                                    " AND (A.Flag & 8 = 0 OR A.Flag & 32 <> 0)" +
                                     " ORDER BY B.Situacion, A.Orden"
                         )
 

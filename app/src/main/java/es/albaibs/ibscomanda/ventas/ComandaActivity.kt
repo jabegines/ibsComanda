@@ -1,7 +1,9 @@
 package es.albaibs.ibscomanda.ventas
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.KeyEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -27,10 +29,12 @@ class ComandaActivity: AppCompatActivity() {
     private lateinit var fAdptCuenta: CuentasRvAdapter
     private val connInf: Connection = DBConnection.connectionINF as Connection
     private val connGes: Connection = DBConnection.connectionGES as Connection
+    private lateinit var prefs: SharedPreferences
 
     private var fVistaActual: Int  = 1
     private var fVistaAnterior: Int = 1
     private var fGrupoActual: Int = 0
+    private var fPuesto: Short = 0
     private var fSala: Short = 0
     private var fMesa: Short = 0
     private var fLinea: Int = 0
@@ -41,6 +45,9 @@ class ComandaActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ComandaActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        fPuesto = prefs.getString("terminal", "0")?.toShort() ?: 0
 
         fTarifa = ConfiguracionesDao.getEntero(connInf, "HOSTELERIA", "TARIFAPRECIOS")
         val i = intent
@@ -266,7 +273,22 @@ class ComandaActivity: AppCompatActivity() {
     private fun imprimirCocina() {
         val lDatosCocina = LineasDao.consultaCocina(connInf, fSala, fMesa, 0)
 
+        var fSitActual: Short = -1
+        for (datoCocina in lDatosCocina) {
+            // Cada vez que cambiemos de situación buscaremos qué impresoras tienen dicha situación para imprirmir en ellas
+            if (datoCocina.situacion != fSitActual) {
+                fSitActual = datoCocina.situacion
+                val lImpresoras = SituacionesPuestoDao.getImpresorasSituacion(connInf, fPuesto, fSitActual)
+                for (nombreImpresora in lImpresoras) {
+                    // Buscamos en ConfiguracionPuestos qué configuración tiene la impresa (IP y puerto)
+                    val datosImpresora = SituacionesPuestoDao.getConfImpresora(connInf, fPuesto, nombreImpresora)
+
+                    aquí me quedé
+                }
+            }
+        }
     }
+
 
     fun verCuenta(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador

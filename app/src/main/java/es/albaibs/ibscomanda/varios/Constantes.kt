@@ -85,3 +85,9 @@ class DatosCocina {
     var situacion: Short = 0
     var orden: Int = 0
 }
+
+
+class DatosConfImpresora {
+    var ip: String = ""
+    var puerto: Int = 0
+}
