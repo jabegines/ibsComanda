@@ -45,6 +45,10 @@ class ComandaActivity: AppCompatActivity() {
     private var fPosicionActual = 0
 
 
+    private val fRequestSelecFormato = 1
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ComandaActivityBinding.inflate(layoutInflater)
@@ -64,7 +68,7 @@ class ComandaActivity: AppCompatActivity() {
 
 
     private fun inicializarControles() {
-        binding.btnMesa.text = fMesa.toString()
+        btnMesa.text = fMesa.toString()
 
         // Comprobamos si hay alguna linea en la cuenta, en cuyo caso actualizamos fLinea. Si no, añadimos a la cabecera.
         doAsync {
@@ -127,7 +131,9 @@ class ComandaActivity: AppCompatActivity() {
         fAdptArticulos = ArticulosGrupoRvAdapter(getArticulos(queGrupo), 0.0, this, object : ArticulosGrupoRvAdapter.OnItemClickListener {
                 override fun onClick(view: View, data: ListaArticulosGrupo) {
                     fPosicionActual = fAdptArticulos.selectedPos
-                    vender(data)
+                    // Si el artículo tiene formatos los pediremos
+                    if (data.flag1 and FLAGARTICULO_USARFORMATOS > 0) seleccionarFormato(data)
+                    else vender(data)
                 }
         })
 
@@ -137,6 +143,12 @@ class ComandaActivity: AppCompatActivity() {
 
     private fun getArticulos(queGrupo: Int): MutableList<ListaArticulosGrupo> {
         return ArticulosDao.getArticulosGrupo(connInf, queGrupo, fSala, fMesa)
+    }
+
+    private fun seleccionarFormato(data: ListaArticulosGrupo) {
+        val i = Intent(this, SeleccFormatoActivity::class.java)
+        i.putExtra("articuloId", data.articuloId)
+        startActivityForResult(i, fRequestSelecFormato)
     }
 
     private fun prepararCuenta() {

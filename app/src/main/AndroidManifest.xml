@@ -32,6 +32,11 @@
             android:label="Comanda"
             android:screenOrientation="sensorLandscape">
         </activity>
+        <activity
+            android:name=".ventas.SeleccFormatoActivity"
+            android:label="Formatos"
+            android:screenOrientation="sensorLandscape">
+        </activity>
     </application>
 
 </manifest>

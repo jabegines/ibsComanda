@@ -8,6 +8,10 @@ const val VIENDO_ARTICULOS = 2
 const val VIENDO_CUENTA = 3
 
 
+// Flag1 artículos
+const val FLAGARTICULO_USARFORMATOS = 4096
+
+
 class ListaSalas {
     var salaId: Short = 0
     var nombre: String = ""
@@ -29,6 +33,7 @@ class ListaArticulosGrupo {
     var codigo: String = ""
     var descripcion: String = ""
     var descrTicket: String = ""
+    var flag1: Int = 0
 }
 
 class ListaLineasCuenta {
@@ -36,6 +41,11 @@ class ListaLineasCuenta {
     var cantidad: String = ""
     var descripcion: String = ""
     var importe: String = ""
+}
+
+class ListaFormatos {
+    var formatoId: Short = 0
+    var descripcion: String = ""
 }
 
 
