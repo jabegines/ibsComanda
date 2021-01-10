@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.R
@@ -12,19 +11,23 @@ import es.albaibs.ibscomanda.varios.ListaArticulosGrupo
 import kotlinx.android.synthetic.main.item_articulos_list.view.*
 
 
-class ArticulosGrupoRvAdapter(var articulos: MutableList<ListaArticulosGrupo>, val context: Context, var listener: OnItemClickListener): RecyclerView.Adapter<ArticulosGrupoRvAdapter.ViewHolder>() {
+class ArticulosGrupoRvAdapter(var articulos: MutableList<ListaArticulosGrupo>, var queCantidad: Double, val context: Context, var listener: OnItemClickListener): RecyclerView.Adapter<ArticulosGrupoRvAdapter.ViewHolder>() {
 
-    private var selectedPos: Int = RecyclerView.NO_POSITION
+    var selectedPos: Int = RecyclerView.NO_POSITION
+
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = articulos[position]
 
-        if (selectedPos == position)
-            holder.itemView.imvArtVendido.visibility = View.VISIBLE
-        else
-            holder.itemView.imvArtVendido.visibility = View.INVISIBLE
+        if (selectedPos == position) {
+            holder.itemView.tvCantVend.visibility = View.VISIBLE
+            holder.itemView.tvCantVend.text = String.format("%.0f", queCantidad)
+
+        } else
+            holder.itemView.tvCantVend.visibility = View.INVISIBLE
 
         holder.bind(item, context)
+
 
         holder.itemView.setOnClickListener {
             selectedPos = position

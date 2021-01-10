@@ -72,6 +72,22 @@ class LineasDao {
             }
         }
 
+        fun dimeCantLinea(conn: Connection, fSala: Short, fMesa: Short, fFraccion: Short, fLinea: Int): Double {
+            val comm: Statement = conn.createStatement()
+
+            return try {
+                val rs = comm.executeQuery("SELECT Cantidad FROM HTLineasCuentas WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Linea = $fLinea")
+                return if (rs.next())
+                    rs.getDouble("Cantidad")
+                else
+                    0.0
+
+            } catch (e:Exception) {
+                e.printStackTrace()
+                0.0
+            }
+        }
+
         fun consultaCocina(conn: Connection, fSala: Short, fMesa: Short, fFraccion: Short): List<DatosCocina> {
             val comm: Statement = conn.createStatement()
             val listaCocina = emptyList<DatosCocina>().toMutableList()

@@ -11,7 +11,7 @@ class ArticulosDao {
 
     companion object {
 
-        fun getArticulosGrupo(conn: Connection, queGrupo: Int): MutableList<ListaArticulosGrupo> {
+        fun getArticulosGrupo(conn: Connection, queGrupo: Int, fSala: Short, fMesa: Short): MutableList<ListaArticulosGrupo> {
             val listaArticulos = emptyList<ListaArticulosGrupo>().toMutableList()
             val comm: Statement = conn.createStatement()
 
@@ -26,10 +26,10 @@ class ArticulosDao {
 
                         while (rs.next()) {
                             val lista = ListaArticulosGrupo()
-                            lista.articuloId = rs.getInt("ARTICULO")
-                            lista.codigo = rs.getString("CODIGO")
-                            lista.descripcion = rs.getString("DESCRIPCION")
-                            lista.descrTicket = rs.getString("DESCRIPCIONTICKET")
+                            lista.articuloId = rs.getInt("Articulo")
+                            lista.codigo = rs.getString("Codigo")
+                            lista.descripcion = rs.getString("Descripcion")
+                            lista.descrTicket = rs.getString("DescripcionTicket")
                             listaArticulos.add(lista)
                         }
                         latch.countDown()

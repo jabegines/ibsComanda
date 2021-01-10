@@ -16,8 +16,10 @@ import es.albaibs.ibscomanda.R
 import es.albaibs.ibscomanda.dao.*
 import es.albaibs.ibscomanda.databinding.ComandaActivityBinding
 import es.albaibs.ibscomanda.varios.*
+import es.albaibs.ibscomanda.ventas.Impresion.Companion.imprimir
 import kotlinx.android.synthetic.main.comanda_activity.*
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.sql.Connection
 
 
@@ -39,6 +41,8 @@ class ComandaActivity: AppCompatActivity() {
     private var fMesa: Short = 0
     private var fLinea: Int = 0
     private var fTarifa: Int = 1
+
+    private var fPosicionActual = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,21 +90,12 @@ class ComandaActivity: AppCompatActivity() {
         //binding.btnGrupos.visibility = View.
         //btnVerCuenta.setText(R.string.ver_cuenta)
         btnGrupos.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
-        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(
-            null, null, null, ResourcesCompat.getDrawable(
-                resources,
-                R.drawable.cuenta,
-                null
-            )
-        )
+        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null))
         setRVGrupos()
     }
 
     private fun setRVGrupos() {
-        fAdptGrupos = GruposVtaRvAdapter(
-            getGrupos(),
-            this,
-            object : GruposVtaRvAdapter.OnItemClickListener {
+        fAdptGrupos = GruposVtaRvAdapter(getGrupos(), this, object : GruposVtaRvAdapter.OnItemClickListener {
                 override fun onClick(view: View, data: ListaGruposVta) {
                     prepararArticulosGrupo(data.grupoId)
                 }
@@ -122,64 +117,41 @@ class ComandaActivity: AppCompatActivity() {
         fGrupoActual = queGrupo
         //binding.btnGrupos.visibility = View.VISIBLE
         //btnVerCuenta.setText(R.string.ver_cuenta)
-        btnGrupos.setCompoundDrawablesWithIntrinsicBounds(
-            null, null, null, ResourcesCompat.getDrawable(
-                resources,
-                R.drawable.grupos,
-                null
-            )
-        )
-        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(
-            null, null, null, ResourcesCompat.getDrawable(
-                resources,
-                R.drawable.cuenta,
-                null
-            )
-        )
+        btnGrupos.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.grupos, null))
+        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null))
         setRVArticulos(queGrupo)
     }
 
 
     private fun setRVArticulos(queGrupo: Int) {
-        fAdptArticulos = ArticulosGrupoRvAdapter(
-            getArticulos(queGrupo),
-            this,
-            object : ArticulosGrupoRvAdapter.OnItemClickListener {
+        fAdptArticulos = ArticulosGrupoRvAdapter(getArticulos(queGrupo), 0.0, this, object : ArticulosGrupoRvAdapter.OnItemClickListener {
                 override fun onClick(view: View, data: ListaArticulosGrupo) {
+                    fPosicionActual = fAdptArticulos.selectedPos
                     vender(data)
                 }
-            })
+        })
 
         fRecycler.layoutManager = GridLayoutManager(this, 5)
         fRecycler.adapter = fAdptArticulos
     }
 
     private fun getArticulos(queGrupo: Int): MutableList<ListaArticulosGrupo> {
-        return ArticulosDao.getArticulosGrupo(connInf, queGrupo)
+        return ArticulosDao.getArticulosGrupo(connInf, queGrupo, fSala, fMesa)
     }
 
     private fun prepararCuenta() {
         fVistaAnterior = fVistaActual
         fVistaActual = VIENDO_CUENTA
-        //btnVerCuenta.setText(R.string.vender)
-        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(
-            null, null, null, ResourcesCompat.getDrawable(
-                resources,
-                R.drawable.vino,
-                null
-            )
-        )
+
+        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.vino, null))
         setRVCuenta()
     }
 
     private fun setRVCuenta() {
-        fAdptCuenta = CuentasRvAdapter(
-            getLineasCuenta(),
-            this,
-            object : CuentasRvAdapter.OnItemClickListener {
+        fAdptCuenta = CuentasRvAdapter(getLineasCuenta(), this, object : CuentasRvAdapter.OnItemClickListener {
                 override fun onClick(view: View, data: ListaLineasCuenta) {
                 }
-            })
+        })
 
         fRecycler.layoutManager = LinearLayoutManager(this)
         fRecycler.adapter = fAdptCuenta
@@ -190,8 +162,6 @@ class ComandaActivity: AppCompatActivity() {
     }
 
     private fun vender(data: ListaArticulosGrupo) {
-        //var resultado = true
-
         doAsync {
             val registro = DatosLinea()
             registro.sala = fSala
@@ -213,22 +183,37 @@ class ComandaActivity: AppCompatActivity() {
             fLinea++
         }
 
-        //fRecycler.adapter?.notifyDataSetChanged()
+        fAdptArticulos.queCantidad = 1.0
     }
 
     fun anyadirCant(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
         doAsync {
+            val queCantidad = LineasDao.dimeCantLinea(connGes, fSala, fMesa, 0, fLinea-1)
             LineasDao.actualizarCantidad(connGes, fSala, fMesa, 0, fLinea-1, 1)
+
+            uiThread {
+                fAdptArticulos.queCantidad = queCantidad + 1
+                fAdptArticulos.selectedPos = fPosicionActual
+                fAdptArticulos.notifyDataSetChanged()
+            }
         }
+
     }
 
     fun restarCant(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
         doAsync {
+            val queCantidad = LineasDao.dimeCantLinea(connGes, fSala, fMesa, 0, fLinea-1)
             LineasDao.actualizarCantidad(connGes, fSala, fMesa, 0, fLinea-1, -1)
+
+            uiThread {
+                fAdptArticulos.queCantidad = queCantidad - 1
+                fAdptArticulos.selectedPos = fPosicionActual
+                fAdptArticulos.notifyDataSetChanged()
+            }
         }
     }
 
@@ -261,7 +246,7 @@ class ComandaActivity: AppCompatActivity() {
             if (LineasDao.sinLineas(connInf, fSala, fMesa)) {
                 CuentasDao.borrarCuenta(connGes, fSala, fMesa)
             } else {
-                imprimirCocina()
+                //imprimirCocina()
             }
         }
 
@@ -282,23 +267,24 @@ class ComandaActivity: AppCompatActivity() {
                 for (nombreImpresora in lImpresoras) {
                     // Buscamos en ConfiguracionPuestos qué configuración tiene la impresa (IP y puerto)
                     val datosImpresora = SituacionesPuestoDao.getConfImpresora(connInf, fPuesto, nombreImpresora)
-
-                    aquí me quedé
+                    imprimir(datoCocina, datosImpresora)
                 }
             }
         }
     }
 
 
+
+
     fun verCuenta(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
-        if (fVistaActual == VIENDO_CUENTA)
+        if (fVistaActual == VIENDO_CUENTA) {
             if (fVistaAnterior == VIENDO_GRUPOS)
                 prepararGruposVta()
             else
                 prepararArticulosGrupo(fGrupoActual)
-        else
+        } else
             prepararCuenta()
     }
 
