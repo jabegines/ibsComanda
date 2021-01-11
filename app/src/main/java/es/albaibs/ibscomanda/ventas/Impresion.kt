@@ -19,21 +19,37 @@ class Impresion {
         val BEEPER = byteArrayOf(0x1b, 0x42, 0x05, 0x09)                // Beeps 5 times for 9*50ms each time
 
 
-        fun imprimir(datoCocina: DatosCocina, datosImpresora: DatosConfImpresora) {
+        fun imprimir(lDatosCocina: List<DatosCocina>, datosImpresora: DatosConfImpresora, fSitActual: Short, fSala: Short, fMesa: Short) {
 
             val uiThread = object : HandlerThread("UIHandler") {
                 override fun run() {
                     val socket = Socket(datosImpresora.ip, datosImpresora.puerto)
                     val outputStream = socket.getOutputStream()
-                    outputStream.write(TXT_2WIDTH)
-                    var text1 = "Cocina" + "\n\n"
+                    //outputStream.write(TXT_2WIDTH)
+                    var text1 = "Para: " + lDatosCocina[0].descrSituacion + "\n\n"
                     outputStream.write(text1.toByteArray())
 
-                    outputStream.write(TXT_BOLD_ON)
-                    text1 = "Negrita" + "\n\n"
+                    //outputStream.write(TXT_BOLD_ON)
+                    text1 = "Usuario Sala: $fSala\n\n"
                     outputStream.write(text1.toByteArray())
 
+                    //outputStream.write(TXT_2HEIGHT)
+                    //outputStream.write(TXT_BOLD_ON)
+                    text1 = "Mesa: $fMesa\n\n"
+                    outputStream.write(text1.toByteArray())
 
+                    text1 = "------------------------------" + "\n\n"
+                    outputStream.write(text1.toByteArray())
+
+                    for (datoCocina in lDatosCocina) {
+                        if (datoCocina.situacion == fSitActual) {
+                            text1 = datoCocina.cantidad + " " + datoCocina.descripcion + "\n\n"
+                            outputStream.write(text1.toByteArray())
+                        }
+                    }
+
+                    text1 = "\n\n\n"
+                    outputStream.write(text1.toByteArray())
                     outputStream.close()
                 }
             }

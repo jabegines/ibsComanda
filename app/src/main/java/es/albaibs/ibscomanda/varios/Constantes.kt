@@ -93,6 +93,7 @@ class DatosCocina {
     var piezas: String = ""
     var flag: Short = 0
     var situacion: Short = 0
+    var descrSituacion: String = ""
     var orden: Int = 0
 }
 

@@ -97,8 +97,9 @@ class LineasDao {
                 override fun run() {
                     try {
                         val rs = comm.executeQuery(
-                            "SELECT A.Articulo, A.Linea, A.Descripcion, A.Cantidad, A.Piezas, A.Flag, B.Situacion, A.Orden" +
+                            "SELECT A.Articulo, A.Linea, A.Descripcion, A.Cantidad, A.Piezas, A.Flag, B.Situacion, C.Descripcion DescrSit, A.Orden" +
                                     " FROM HTLineasCuentas A, HTSituacionesArticulo B" +
+                                    " LEFT JOIN HTSituaciones C ON C.Codigo = B.Situacion" +
                                     " WHERE A.Articulo = B.Articulo" +
                                     " AND A.Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion" +
                                     " AND (A.Flag & 8 = 0 OR A.Flag & 32 <> 0)" +
@@ -115,6 +116,7 @@ class LineasDao {
                             datos.piezas = rs.getString("Piezas")
                             datos.flag = rs.getShort("Flag")
                             datos.situacion = rs.getShort("Situacion")
+                            datos.descrSituacion = rs.getString("DescrSit")
                             datos.orden = rs.getInt("Orden")
 
                             listaCocina.add(datos)
