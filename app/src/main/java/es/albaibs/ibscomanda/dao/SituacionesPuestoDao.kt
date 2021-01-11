@@ -41,15 +41,17 @@ class SituacionesPuestoDao {
             val datosConf = DatosConfImpresora()
 
             return try {
-                val rs = comm.executeQuery("SELECT Valor, Entero FROM ConfiguracionPuestos WHERE Almacen = 0 AND Puesto = $quePuesto")
+                val rs = comm.executeQuery("SELECT Valor, Entero FROM ConfiguracionPuestos WHERE Almacen = 0 AND Puesto = $quePuesto" +
+                        " AND Grupo = 'HOST_IMPRESORA' AND Cadena = '$queImpresora'")
 
+                rs.next()
                 datosConf.ip = rs.getString("Valor")
                 datosConf.puerto = rs.getInt("Entero")
-                return datosConf
+                datosConf
 
             } catch (e: Exception) {
                 e.printStackTrace()
-                return datosConf
+                datosConf
             }
         }
     }

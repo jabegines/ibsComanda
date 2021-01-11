@@ -258,7 +258,7 @@ class ComandaActivity: AppCompatActivity() {
             if (LineasDao.sinLineas(connInf, fSala, fMesa)) {
                 CuentasDao.borrarCuenta(connGes, fSala, fMesa)
             } else {
-                //imprimirCocina()
+                imprimirCocina()
             }
         }
 
