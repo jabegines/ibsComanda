@@ -1,18 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:baselineAligned="false">
 
 
-<androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvFormatos"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.9">
+        android:layout_weight="0.9"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/selec_formato"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvFormatos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/llBotones"
@@ -29,26 +47,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.10"
             android:background="#FFFFFF"
-            android:drawableBottom="@drawable/espera"
-            android:onClick="enEspera" />
-
-        <Button
-            android:id="@+id/btnGrupos"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.10"
-            android:background="#FFFFFF"
-            android:drawableBottom="@drawable/grupos"
-            android:onClick="verGrupos" />
+            android:drawableBottom="@drawable/cancelar"
+            android:onClick="cancelarFto"
+            tools:ignore="NestedWeights" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.80"
-            android:background="#FFFFFF"
-            />
+            android:layout_weight="0.90"
+            android:background="#FFFFFF" />
 
     </LinearLayout>
-
 
 </LinearLayout>

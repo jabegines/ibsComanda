@@ -1,5 +1,6 @@
 package es.albaibs.ibscomanda.ventas
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -56,5 +57,15 @@ class SeleccFormatoActivity: AppCompatActivity() {
     private fun getFormatos(): List<ListaFormatos> {
         return FormatosDao.getFormatosArticulo(connInf, fArticulo)
     }
+
+
+    fun cancelarFto(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+
+        val returnIntent = Intent()
+        setResult(RESULT_CANCELED, returnIntent)
+        finish()
+    }
+
 
 }

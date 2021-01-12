@@ -41,6 +41,7 @@ class ComandaActivity: AppCompatActivity() {
     private var fMesa: Short = 0
     private var fLinea: Int = 0
     private var fTarifa: Int = 1
+    private var fUsuario: Short = 0
 
     private var fPosicionActual = 0
 
@@ -56,6 +57,7 @@ class ComandaActivity: AppCompatActivity() {
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         fPuesto = prefs.getString("terminal", "0")?.toShort() ?: 0
+        fUsuario = prefs.getString("usuario", "0")?.toShort() ?: 0
 
         fTarifa = ConfiguracionesDao.getEntero(connInf, "HOSTELERIA", "TARIFAPRECIOS")
         val i = intent
@@ -189,7 +191,7 @@ class ComandaActivity: AppCompatActivity() {
             registro.piezas = "0"
             registro.precio = dimePrecioArt(data.articuloId)
             registro.importe = calculaImporte(registro)
-            registro.usuario = 0
+            registro.usuario = fUsuario
 
             LineasDao.anyadirLinea(connGes, registro)
             fLinea++
@@ -321,6 +323,8 @@ class ComandaActivity: AppCompatActivity() {
         // Para las demás cosas, se reenvía el evento al listener habitual.
         return super.onKeyDown(keyCode, event)
     }
+
+
 
 
 

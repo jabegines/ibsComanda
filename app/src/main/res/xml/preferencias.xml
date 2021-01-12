@@ -10,6 +10,16 @@
             android:maxLength="3"
             android:summary="Número de puesto en la gestión"
             android:dialogTitle="Número de puesto"/>
+
+        <EditTextPreference
+            android:key="usuario"
+            android:icon="@android:drawable/ic_menu_mylocation"
+            android:title="Usuario"
+            android:inputType="numberSigned"
+            android:maxLength="3"
+            android:summary="Código de usuario en la gestión"
+            android:dialogTitle="Código de usuario"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Comunicación">

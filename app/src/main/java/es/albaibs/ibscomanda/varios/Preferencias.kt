@@ -23,6 +23,7 @@ class Preferencias: AppCompatActivity() {
             addPreferencesFromResource(R.xml.preferencias)
 
             bindPreferenceSummaryToValue(findPreference("terminal"))
+            bindPreferenceSummaryToValue(findPreference("usuario"))
             bindPreferenceSummaryToValue(findPreference("ip_servidor"))
             bindPreferenceSummaryToValue(findPreference("puerto_servidor"))
             bindPreferenceSummaryToValue(findPreference("prefijo"))
