@@ -46,7 +46,10 @@ class SeleccFormatoActivity: AppCompatActivity() {
     private fun prepararRecycler() {
         fAdapter = FormatosRvAdapter(getFormatos(), this, object: FormatosRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: ListaFormatos) {
-                //
+                val returnIntent = Intent()
+                returnIntent.putExtra("formatoId", data.formatoId)
+                setResult(RESULT_OK, returnIntent)
+                finish()
             }
         })
 

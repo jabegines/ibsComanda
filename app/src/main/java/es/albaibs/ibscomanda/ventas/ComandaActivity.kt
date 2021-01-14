@@ -1,5 +1,6 @@
 package es.albaibs.ibscomanda.ventas
 
+import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -44,7 +45,8 @@ class ComandaActivity: AppCompatActivity() {
     private var fUsuario: Short = 0
 
     private var fPosicionActual = 0
-
+    private var fDataActual = ListaArticulosGrupo()
+    private var fFormatoId: Short = 0
 
     private val fRequestSelecFormato = 1
 
@@ -133,8 +135,12 @@ class ComandaActivity: AppCompatActivity() {
         fAdptArticulos = ArticulosGrupoRvAdapter(getArticulos(queGrupo), 0.0, this, object : ArticulosGrupoRvAdapter.OnItemClickListener {
                 override fun onClick(view: View, data: ListaArticulosGrupo) {
                     fPosicionActual = fAdptArticulos.selectedPos
+                    fFormatoId = 0
                     // Si el artículo tiene formatos los pediremos
-                    if (data.flag1 and FLAGARTICULO_USARFORMATOS > 0) seleccionarFormato(data)
+                    if (data.flag1 and FLAGARTICULO_USARFORMATOS > 0) {
+                        fAdptArticulos.queCantidad = 1.0
+                        seleccionarFormato(data)
+                    }
                     else vender(data)
                 }
         })
@@ -148,6 +154,7 @@ class ComandaActivity: AppCompatActivity() {
     }
 
     private fun seleccionarFormato(data: ListaArticulosGrupo) {
+        fDataActual = data
         val i = Intent(this, SeleccFormatoActivity::class.java)
         i.putExtra("articuloId", data.articuloId)
         startActivityForResult(i, fRequestSelecFormato)
@@ -192,6 +199,7 @@ class ComandaActivity: AppCompatActivity() {
             registro.precio = dimePrecioArt(data.articuloId)
             registro.importe = calculaImporte(registro)
             registro.usuario = fUsuario
+            registro.formatoId = fFormatoId
 
             LineasDao.anyadirLinea(connGes, registro)
             fLinea++
@@ -325,6 +333,17 @@ class ComandaActivity: AppCompatActivity() {
     }
 
 
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == fRequestSelecFormato) {
+            if (resultCode == Activity.RESULT_OK) {
+                fFormatoId = data?.getShortExtra("formatoId", 0) ?: 0
+                vender(fDataActual)
+            }
+        }
+    }
 
 
 

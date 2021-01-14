@@ -81,6 +81,7 @@ class DatosLinea {
     var precio: String = ""
     var importe: String = ""
     var usuario: Short = 0
+    var formatoId: Short = 0
 }
 
 

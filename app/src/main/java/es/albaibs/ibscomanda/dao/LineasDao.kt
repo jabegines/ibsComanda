@@ -47,11 +47,11 @@ class LineasDao {
 
             return try {
                 comm.execute("INSERT INTO HTLineasCuentas (Sala, Mesa, Fraccion, Linea, Orden, Articulo, Codigo, Descripcion, DescrTicket," +
-                        " Cantidad, Piezas, Precio, Importe, Usuario)" +
+                        " Cantidad, Piezas, Precio, Importe, Formato, Usuario)" +
                         " VALUES (" + registro.sala + ", " + registro.mesa + ", " + registro.fraccion + "," + registro.linea +
                         ", " + registro.orden + ", " + registro.articuloId + ", " + registro.codigoArt + ", '" + registro.descripcion +
                         "', '" + registro.descrTicket + "', " + registro.cantidad + ", " + registro.piezas + ", " + registro.precio +
-                        ", " + registro.importe + ", " + registro.usuario + ")")
+                        ", " + registro.importe + ", " + registro.formatoId + ", " + registro.usuario + ")")
 
             } catch (e: Exception) {
                 e.printStackTrace()
