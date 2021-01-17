@@ -28,23 +28,37 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvGruposModif"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.2"
-            android:layout_marginTop="20dp">
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvGruposModif"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="0.2"
+                    android:padding="20dp">
+            </androidx.recyclerview.widget.RecyclerView>
 
-        </androidx.recyclerview.widget.RecyclerView>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_weight="0.8"
+                android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvModif"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.8"
-            android:layout_marginTop="20dp">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvModif"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.7"
+                    android:padding="20dp"></androidx.recyclerview.widget.RecyclerView>
 
-        </androidx.recyclerview.widget.RecyclerView>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvModSelecc"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.3"
+                    android:padding="20dp"></androidx.recyclerview.widget.RecyclerView>
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -60,20 +74,41 @@
         android:padding="5dp">
 
         <Button
-            android:id="@+id/btnEnEspera"
+            android:id="@+id/btnAceptarModif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.10"
+            android:background="#FFFFFF"
+            android:drawableBottom="@drawable/aceptar"
+            android:onClick="aceptarModif"
+            tools:ignore="NestedWeights" />
+
+        <Button
+            android:id="@+id/btnCancelarModif"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.10"
             android:background="#FFFFFF"
             android:drawableBottom="@drawable/cancelar"
-            android:onClick="cancelarFto"
+            android:onClick="cancelarModif"
             tools:ignore="NestedWeights" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.90"
+            android:layout_weight="0.70"
             android:background="#FFFFFF" />
+
+        <Button
+            android:id="@+id/btnBorrarModif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.20"
+            android:background="#FFFFFF"
+            android:drawableTop="@drawable/restar"
+            android:onClick="borrarModif"
+            tools:ignore="NestedWeights" />
+
 
     </LinearLayout>
 

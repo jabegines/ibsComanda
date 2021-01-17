@@ -1,5 +1,6 @@
 package es.albaibs.ibscomanda.ventas
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,7 @@ import es.albaibs.ibscomanda.databinding.SeleccModifActivityBinding
 import es.albaibs.ibscomanda.varios.ListaGruposModif
 import es.albaibs.ibscomanda.varios.ListaModificadores
 import kotlinx.android.synthetic.main.selecc_modif_activity.*
+import org.json.JSONArray
 import java.sql.Connection
 
 
@@ -20,12 +22,15 @@ class SeleccModifActivity: AppCompatActivity() {
     private lateinit var binding: SeleccModifActivityBinding
     private lateinit var fRecGrupos: RecyclerView
     private lateinit var fRecModif: RecyclerView
+    private lateinit var fRecMdSelecc: RecyclerView
     private lateinit var fAdpGrupos: GruposModifRvAdapter
     private lateinit var fAdpModif: ModificadoresRvAdapter
+    private lateinit var fAdpMdSelecc: ModifSeleccRvAdapter
     private val connInf: Connection = DBConnection.connectionINF as Connection
 
     private var fArticulo = 0
     private var fGrupo: Short = 0
+    private lateinit var lModSelecc: MutableList<ListaModificadores>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +50,9 @@ class SeleccModifActivity: AppCompatActivity() {
     private fun inicializarControles() {
         fRecGrupos = rvGruposModif
         fRecModif = rvModif
+        fRecMdSelecc = rvModSelecc
+
+        lModSelecc = emptyList<ListaModificadores>().toMutableList()
     }
 
 
@@ -62,22 +70,69 @@ class SeleccModifActivity: AppCompatActivity() {
 
 
     private fun getGrupos(): List<ListaGruposModif> {
-        return GruposModifDao.getGruposModif(connInf, fArticulo)
+        val queLista = GruposModifDao.getGruposModif(connInf, fArticulo)
+        fGrupo = queLista[0].grupoId
+        return queLista
     }
 
     private fun prepararRecModif() {
         fAdpModif = ModificadoresRvAdapter(getModificadores(), this, object: ModificadoresRvAdapter.OnItemClickListener {
             override fun onClick(view: View, data: ListaModificadores) {
+                lModSelecc.add(data)
+                prepararModSelecc()
             }
         })
 
-        fRecModif.layoutManager = GridLayoutManager(this, 3)
+        fRecModif.layoutManager = GridLayoutManager(this, 4)
         fRecModif.adapter = fAdpModif
     }
 
     private fun getModificadores(): List<ListaModificadores> {
-        val queLista = ModificadoresDao.getModificadores(connInf, fGrupo)
-        return queLista
+        return ModificadoresDao.getModificadores(connInf, fGrupo)
     }
+
+    private fun prepararModSelecc() {
+        fAdpMdSelecc = ModifSeleccRvAdapter(lModSelecc, this, object: ModifSeleccRvAdapter.OnItemClickListener {
+            override fun onClick(view: View, data: ListaModificadores) {
+            }
+        })
+
+        fRecMdSelecc.layoutManager = GridLayoutManager(this, 4)
+        fRecMdSelecc.adapter = fAdpMdSelecc
+    }
+
+
+    fun borrarModif(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+
+        //if (fPosicionLista > -1) {
+        if (fAdpMdSelecc.selectedPos > -1) {
+            lModSelecc.removeAt(fAdpMdSelecc.selectedPos)
+            fAdpMdSelecc.notifyDataSetChanged()
+            fAdpMdSelecc.selectedPos = -1
+        }
+    }
+
+
+    fun cancelarModif(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+
+        val returnIntent = Intent()
+        setResult(RESULT_CANCELED, returnIntent)
+        finish()
+    }
+
+
+    fun aceptarModif(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+
+        // Pasamos el array con los modificadores seleccionados a Json para poder enviarlos a la activity ComandaActivity
+        val listaJson = JSONArray(lModSelecc)
+        val returnIntent = Intent()
+        returnIntent.putExtra("listaModif", listaJson.toString())
+        setResult(RESULT_OK, returnIntent)
+        finish()
+    }
+
 
 }

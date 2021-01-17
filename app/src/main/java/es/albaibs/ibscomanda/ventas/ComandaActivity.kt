@@ -21,6 +21,8 @@ import es.albaibs.ibscomanda.ventas.Impresion.Companion.imprimir
 import kotlinx.android.synthetic.main.comanda_activity.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import org.json.JSONArray
+import org.json.JSONException
 import java.sql.Connection
 
 
@@ -361,6 +363,20 @@ class ComandaActivity: AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 fFormatoId = data?.getShortExtra("formatoId", 0) ?: 0
                 vender(fDataActual)
+            }
+        }
+        else if (requestCode == fRequestSelecModif) {
+            if (resultCode == Activity.RESULT_OK) {
+                // Obtenemos la lista de modificadores mediante un objeto Json
+                val jsonArray = data?.getStringExtra("listaModif") ?: ""
+                try {
+                    val listaModif = JSONArray(jsonArray)
+
+                    aquí me quedé, continuar con la lista de modificadores
+
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
             }
         }
     }
