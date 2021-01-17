@@ -49,6 +49,7 @@ class ComandaActivity: AppCompatActivity() {
     private var fFormatoId: Short = 0
 
     private val fRequestSelecFormato = 1
+    private val fRequestSelecModif = 2
 
 
 
@@ -136,6 +137,11 @@ class ComandaActivity: AppCompatActivity() {
                 override fun onClick(view: View, data: ListaArticulosGrupo) {
                     fPosicionActual = fAdptArticulos.selectedPos
                     fFormatoId = 0
+                    // Vemos si el artículo tiene modificadores
+                    if (articuloTieneModif(data.articuloId)) {
+                        seleccionarModif(data.articuloId)
+                    }
+
                     // Si el artículo tiene formatos los pediremos
                     if (data.flag1 and FLAGARTICULO_USARFORMATOS > 0) {
                         fAdptArticulos.queCantidad = 1.0
@@ -149,9 +155,23 @@ class ComandaActivity: AppCompatActivity() {
         fRecycler.adapter = fAdptArticulos
     }
 
+
+    private fun articuloTieneModif(queArticulo: Int): Boolean {
+        val listaModif = ArticulosDao.tieneModificadores(connInf, queArticulo)
+        return (listaModif.isNotEmpty())
+    }
+
     private fun getArticulos(queGrupo: Int): MutableList<ListaArticulosGrupo> {
         return ArticulosDao.getArticulosGrupo(connInf, queGrupo, fSala, fMesa)
     }
+
+
+    private fun seleccionarModif(queArticulo: Int) {
+        val i = Intent(this, SeleccModifActivity::class.java)
+        i.putExtra("articuloId", queArticulo)
+        startActivityForResult(i, fRequestSelecModif)
+    }
+
 
     private fun seleccionarFormato(data: ListaArticulosGrupo) {
         fDataActual = data

@@ -11,6 +11,33 @@ class ArticulosDao {
 
     companion object {
 
+        fun tieneModificadores(conn: Connection, queArticulo: Int): MutableList<Int> {
+            val listaModif = emptyList<Int>().toMutableList()
+            val comm: Statement = conn.createStatement()
+
+            val latch = CountDownLatch(1)
+            val uiThread = object : HandlerThread("UIHandler") {
+                override fun run() {
+                    try {
+                        val rs = comm.executeQuery("SELECT Grupo FROM HTModificadoresArticulo" +
+                                " WHERE Articulo = " + queArticulo)
+
+                        while (rs.next()) {
+                            listaModif.add(rs.getInt("Grupo"))
+                        }
+                        latch.countDown()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+            uiThread.start()
+            latch.await()
+            return listaModif
+        }
+
+
+
         fun getArticulosGrupo(conn: Connection, queGrupo: Int, fSala: Short, fMesa: Short): MutableList<ListaArticulosGrupo> {
             val listaArticulos = emptyList<ListaArticulosGrupo>().toMutableList()
             val comm: Statement = conn.createStatement()

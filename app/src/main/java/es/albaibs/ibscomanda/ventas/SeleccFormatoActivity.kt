@@ -38,7 +38,6 @@ class SeleccFormatoActivity: AppCompatActivity() {
 
 
     private fun inicializarControles() {
-
         fRecycler = rvFormatos
     }
 

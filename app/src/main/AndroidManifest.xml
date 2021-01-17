@@ -37,6 +37,11 @@
             android:label="Formatos"
             android:screenOrientation="sensorLandscape">
         </activity>
+        <activity
+            android:name=".ventas.SeleccModifActivity"
+            android:label="Modificadores"
+            android:screenOrientation="sensorLandscape">
+        </activity>
     </application>
 
 </manifest>

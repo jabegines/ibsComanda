@@ -28,6 +28,19 @@ class ListaGruposVta {
 }
 
 
+class ListaGruposModif {
+    var grupoId: Short = 0
+    var descripcion: String = ""
+}
+
+class ListaModificadores {
+    var modificador: Int = 0
+    var esArticulo: String = ""
+    var dosis: String = ""
+    var incrPrecio: String = ""
+    var descripcion: String = ""
+}
+
 class ListaArticulosGrupo {
     var articuloId: Int = 0
     var codigo: String = ""
