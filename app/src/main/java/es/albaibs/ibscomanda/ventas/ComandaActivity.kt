@@ -142,14 +142,14 @@ class ComandaActivity: AppCompatActivity() {
                     // Vemos si el artículo tiene modificadores
                     if (articuloTieneModif(data.articuloId)) {
                         seleccionarModif(data.articuloId)
-                    }
 
-                    // Si el artículo tiene formatos los pediremos
-                    if (data.flag1 and FLAGARTICULO_USARFORMATOS > 0) {
-                        fAdptArticulos.queCantidad = 1.0
-                        seleccionarFormato(data)
+                    } else {
+                        // Si el artículo tiene formatos los pediremos
+                        if (data.flag1 and FLAGARTICULO_USARFORMATOS > 0) {
+                            fAdptArticulos.queCantidad = 1.0
+                            seleccionarFormato(data)
+                        } else vender(data)
                     }
-                    else vender(data)
                 }
         })
 
@@ -169,6 +169,9 @@ class ComandaActivity: AppCompatActivity() {
 
 
     private fun seleccionarModif(queArticulo: Int) {
+
+        aquí me quedé, continuar con data
+
         val i = Intent(this, SeleccModifActivity::class.java)
         i.putExtra("articuloId", queArticulo)
         startActivityForResult(i, fRequestSelecModif)
@@ -372,7 +375,7 @@ class ComandaActivity: AppCompatActivity() {
                 try {
                     val listaModif = JSONArray(jsonArray)
 
-                    aquí me quedé, continuar con la lista de modificadores
+
 
                 } catch (e: JSONException) {
                     e.printStackTrace()
