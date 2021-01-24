@@ -14,7 +14,6 @@ import es.albaibs.ibscomanda.databinding.SeleccModifActivityBinding
 import es.albaibs.ibscomanda.varios.ListaGruposModif
 import es.albaibs.ibscomanda.varios.ListaModificadores
 import kotlinx.android.synthetic.main.selecc_modif_activity.*
-import org.json.JSONArray
 import java.sql.Connection
 
 
@@ -126,12 +125,27 @@ class SeleccModifActivity: AppCompatActivity() {
     fun aceptarModif(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
-        // Pasamos el array con los modificadores seleccionados a Json para poder enviarlos a la activity ComandaActivity
-        val listaJson = JSONArray(lModSelecc)
-        val returnIntent = Intent()
-        returnIntent.putExtra("listaModif", listaJson.toString())
-        setResult(RESULT_OK, returnIntent)
-        finish()
+        try {
+            var x = 1
+            val returnIntent = Intent()
+            returnIntent.putExtra("numModificadores", lModSelecc.size)
+            for (modificador in lModSelecc) {
+                val mArrayList: MutableList<String> = ArrayList()
+                mArrayList.add(modificador.modificador)
+                mArrayList.add(modificador.esArticulo)
+                mArrayList.add(modificador.dosis)
+                mArrayList.add(modificador.incrPrecio)
+                mArrayList.add(modificador.descripcion)
+                val lArrayList = mArrayList as ArrayList<String>?
+                returnIntent.putStringArrayListExtra("listaModif$x", lArrayList)
+                x++
+            }
+
+            setResult(RESULT_OK, returnIntent)
+            finish()
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
     }
 
 

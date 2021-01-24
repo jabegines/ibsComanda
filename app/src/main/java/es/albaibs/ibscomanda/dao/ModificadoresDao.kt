@@ -31,7 +31,7 @@ class ModificadoresDao {
 
                         while (rs.next()) {
                             val lista = ListaModificadores()
-                            lista.modificador = rs.getInt("Modificador")
+                            lista.modificador = rs.getString("Modificador")
                             lista.esArticulo = rs.getString("EsArticulo")
                             if (rs.getString("Dosis") != null) lista.dosis = rs.getString("Dosis")
                             else lista.dosis = ""

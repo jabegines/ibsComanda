@@ -49,6 +49,7 @@ class ComandaActivity: AppCompatActivity() {
     private var fPosicionActual = 0
     private var fDataActual = ListaArticulosGrupo()
     private var fFormatoId: Short = 0
+    private lateinit var lModificadores: MutableList<ListaModificadores>
 
     private val fRequestSelecFormato = 1
     private val fRequestSelecModif = 2
@@ -141,7 +142,7 @@ class ComandaActivity: AppCompatActivity() {
                     fFormatoId = 0
                     // Vemos si el artículo tiene modificadores
                     if (articuloTieneModif(data.articuloId)) {
-                        seleccionarModif(data.articuloId)
+                        seleccionarModif(data)
 
                     } else {
                         // Si el artículo tiene formatos los pediremos
@@ -168,12 +169,10 @@ class ComandaActivity: AppCompatActivity() {
     }
 
 
-    private fun seleccionarModif(queArticulo: Int) {
-
-        aquí me quedé, continuar con data
-
+    private fun seleccionarModif(data: ListaArticulosGrupo) {
+        fDataActual = data
         val i = Intent(this, SeleccModifActivity::class.java)
-        i.putExtra("articuloId", queArticulo)
+        i.putExtra("articuloId", data.articuloId)
         startActivityForResult(i, fRequestSelecModif)
     }
 
@@ -370,16 +369,28 @@ class ComandaActivity: AppCompatActivity() {
         }
         else if (requestCode == fRequestSelecModif) {
             if (resultCode == Activity.RESULT_OK) {
-                // Obtenemos la lista de modificadores mediante un objeto Json
-                val jsonArray = data?.getStringExtra("listaModif") ?: ""
-                try {
-                    val listaModif = JSONArray(jsonArray)
 
-
-
-                } catch (e: JSONException) {
-                    e.printStackTrace()
+                lModificadores = emptyList<ListaModificadores>().toMutableList()
+                val numModificadores = data?.getIntExtra("numModificadores", 0) ?: 0
+                var x = 1
+                while (x <= numModificadores) {
+                    val lModif = data?.getStringArrayListExtra("listaModif$x") ?: emptyList<String>()
+                    val listaModif = ListaModificadores()
+                    listaModif.modificador = lModif[0]
+                    listaModif.esArticulo = lModif[1]
+                    listaModif.dosis = lModif[2]
+                    listaModif.incrPrecio = lModif[3]
+                    listaModif.descripcion = lModif[4]
+                    lModificadores.add(listaModif)
+                    x++
                 }
+
+                // Si el artículo tiene formatos los pediremos
+                if (fDataActual.flag1 and FLAGARTICULO_USARFORMATOS > 0) {
+                    fAdptArticulos.queCantidad = 1.0
+                    seleccionarFormato(fDataActual)
+                }
+                else vender(fDataActual)
             }
         }
     }
