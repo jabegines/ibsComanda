@@ -20,17 +20,17 @@ class ModificadoresDao {
 
                 for (listModif in lModificadores) {
                     val esArticulo = listModif.esArticulo == "T"
-                    val articuloId = if (esArticulo) "0" else listModif.modificador
-                    //val codigo = " "
+                    val articuloId = if (esArticulo) listModif.modificador else "0"
+                    val codigo = "''"
                     val cantidad = "1.0"
                     val dosis = if (listModif.dosis == "") "0.0" else listModif.dosis
                     val flag = 12
                     val mitad = 0
 
-                    val cadena = "INSERT INTO HTLineasModif (Sala, Mesa, Fraccion, Linea, NumeroModif, LineaDeMenu, Articulo, Comentario," +
+                    val cadena = "INSERT INTO HTLineasModif (Sala, Mesa, Fraccion, Linea, NumeroModif, LineaDeMenu, Articulo, Codigo, Comentario," +
                             " Descripcion, Cantidad, Dosis, IncrPrecio, EsArticulo, Flag, GrupoModif, Mitad)" +
                             " VALUES (" + registro.sala + ", " + registro.mesa + ", " + registro.fraccion + ", " + registro.linea +
-                            ", " + listModif.numeroModif + ", " + lineaDeMenu + ", " + articuloId + ", " + listModif.modificador +
+                            ", " + listModif.numeroModif + ", " + lineaDeMenu + ", " + articuloId + ", " + codigo + ", " + listModif.modificador +
                             ", '" + listModif.descripcion + "', " + cantidad + ", " + dosis +
                             ", " + listModif.incrPrecio + ", '" + listModif.esArticulo + "', " + flag + ", " + listModif.grupoModif +
                             ", " + mitad + ")"

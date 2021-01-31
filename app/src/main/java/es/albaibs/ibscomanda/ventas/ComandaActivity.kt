@@ -10,7 +10,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.DBConnection
 import es.albaibs.ibscomanda.R
@@ -21,8 +20,6 @@ import es.albaibs.ibscomanda.ventas.Impresion.Companion.imprimir
 import kotlinx.android.synthetic.main.comanda_activity.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
-import org.json.JSONArray
-import org.json.JSONException
 import java.sql.Connection
 
 
@@ -31,7 +28,6 @@ class ComandaActivity: AppCompatActivity() {
     private lateinit var fRecycler: RecyclerView
     private lateinit var fAdptGrupos: GruposVtaRvAdapter
     private lateinit var fAdptArticulos: ArticulosGrupoRvAdapter
-    private lateinit var fAdptCuenta: CuentasRvAdapter
     private val connInf: Connection = DBConnection.connectionINF as Connection
     private val connGes: Connection = DBConnection.connectionGES as Connection
     private lateinit var prefs: SharedPreferences
@@ -75,7 +71,8 @@ class ComandaActivity: AppCompatActivity() {
 
 
     private fun inicializarControles() {
-        btnMesa.text = fMesa.toString()
+        val numMesa = "Mesa\n$fMesa"
+        btnMesa.text = numMesa
 
         // Comprobamos si hay alguna linea en la cuenta, en cuyo caso actualizamos fLinea. Si no, añadimos a la cabecera.
         doAsync {
@@ -98,8 +95,6 @@ class ComandaActivity: AppCompatActivity() {
     private fun prepararGruposVta() {
         fVistaAnterior = fVistaActual
         fVistaActual = VIENDO_GRUPOS
-        //binding.btnGrupos.visibility = View.
-        //btnVerCuenta.setText(R.string.ver_cuenta)
         btnGrupos.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
         btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null))
         setRVGrupos()
@@ -126,8 +121,6 @@ class ComandaActivity: AppCompatActivity() {
         fVistaAnterior = fVistaActual
         fVistaActual = VIENDO_ARTICULOS
         fGrupoActual = queGrupo
-        //binding.btnGrupos.visibility = View.VISIBLE
-        //btnVerCuenta.setText(R.string.ver_cuenta)
         btnGrupos.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.grupos, null))
         btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null))
         setRVArticulos(queGrupo)
@@ -183,27 +176,17 @@ class ComandaActivity: AppCompatActivity() {
         startActivityForResult(i, fRequestSelecFormato)
     }
 
-    private fun prepararCuenta() {
-        fVistaAnterior = fVistaActual
-        fVistaActual = VIENDO_CUENTA
 
-        btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.vino, null))
-        setRVCuenta()
+    fun verCuenta(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+
+        val i = Intent(this, VerCuentaActivity::class.java)
+        i.putExtra("sala", fSala.toString())
+        i.putExtra("mesa", fMesa.toString())
+        startActivity(i)
     }
 
-    private fun setRVCuenta() {
-        fAdptCuenta = CuentasRvAdapter(getLineasCuenta(), this, object : CuentasRvAdapter.OnItemClickListener {
-                override fun onClick(view: View, data: ListaLineasCuenta) {
-                }
-        })
 
-        fRecycler.layoutManager = LinearLayoutManager(this)
-        fRecycler.adapter = fAdptCuenta
-    }
-
-    private fun getLineasCuenta(): MutableList<ListaLineasCuenta> {
-        return CuentasDao.getLineasCuenta(connInf, fSala, fMesa)
-    }
 
     private fun vender(data: ListaArticulosGrupo) {
         doAsync {
@@ -325,32 +308,12 @@ class ComandaActivity: AppCompatActivity() {
 
 
 
-
-    fun verCuenta(view: View) {
-        view.getTag(0)          // Para que no dé warning el compilador
-
-        if (fVistaActual == VIENDO_CUENTA) {
-            if (fVistaAnterior == VIENDO_GRUPOS)
-                prepararGruposVta()
-            else
-                prepararArticulosGrupo(fGrupoActual)
-        } else
-            prepararCuenta()
-    }
-
-
     // Manejo los eventos del teclado en la actividad.
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
 
             when (fVistaActual) {
                 VIENDO_GRUPOS -> enEspera(null)
-                VIENDO_CUENTA -> {
-                    if (fVistaAnterior == VIENDO_GRUPOS)
-                        prepararGruposVta()
-                    else
-                        prepararArticulosGrupo(fGrupoActual)
-                }
                 else -> prepararGruposVta()
             }
 

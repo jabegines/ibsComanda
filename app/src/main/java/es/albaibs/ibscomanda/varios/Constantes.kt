@@ -5,7 +5,7 @@ const val COMPILACION_PROGRAMA = ".1"
 
 const val VIENDO_GRUPOS = 1
 const val VIENDO_ARTICULOS = 2
-const val VIENDO_CUENTA = 3
+
 
 
 // Flag1 artículos
@@ -52,6 +52,7 @@ class ListaArticulosGrupo {
 }
 
 class ListaLineasCuenta {
+    var linea: Short = 0
     var orden: Int = 0
     var cantidad: String = ""
     var descripcion: String = ""

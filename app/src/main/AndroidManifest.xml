@@ -42,6 +42,11 @@
             android:label="Modificadores"
             android:screenOrientation="sensorLandscape">
         </activity>
+        <activity
+            android:name=".ventas.VerCuentaActivity"
+            android:label="Ver cuenta"
+            android:screenOrientation="sensorLandscape">
+        </activity>
     </application>
 
 </manifest>

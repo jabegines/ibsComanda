@@ -104,7 +104,6 @@ class SeleccModifActivity: AppCompatActivity() {
     fun borrarModif(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
-        //if (fPosicionLista > -1) {
         if (fAdpMdSelecc.selectedPos > -1) {
             lModSelecc.removeAt(fAdpMdSelecc.selectedPos)
             fAdpMdSelecc.notifyDataSetChanged()

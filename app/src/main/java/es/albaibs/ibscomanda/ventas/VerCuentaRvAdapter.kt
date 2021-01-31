@@ -1,6 +1,7 @@
 package es.albaibs.ibscomanda.ventas
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,15 +9,32 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.R
 import es.albaibs.ibscomanda.varios.ListaLineasCuenta
+import kotlinx.android.synthetic.main.item_gruposvta_list.view.*
+import kotlinx.android.synthetic.main.item_gruposvta_list.view.tvDescrGrupoVta
+import kotlinx.android.synthetic.main.item_lineacuenta_list.view.*
 
+class VerCuentaRvAdapter(var lineas: MutableList<ListaLineasCuenta>, val context: Context, var listener: OnItemClickListener): RecyclerView.Adapter<VerCuentaRvAdapter.ViewHolder>() {
 
-class CuentasRvAdapter(var lineas: MutableList<ListaLineasCuenta>, val context: Context, var listener: OnItemClickListener): RecyclerView.Adapter<CuentasRvAdapter.ViewHolder>() {
+    var selectedPos: Int = RecyclerView.NO_POSITION
+
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = lineas[position]
+
+        if (selectedPos == position) {
+            holder.itemView.tvCantidad.setTextColor(Color.RED)
+            holder.itemView.tvDescripcion.setTextColor(Color.RED)
+            holder.itemView.tvImporte.setTextColor(Color.RED)
+        } else {
+            holder.itemView.tvCantidad.setTextColor(Color.BLACK)
+            holder.itemView.tvDescripcion.setTextColor(Color.BLACK)
+            holder.itemView.tvImporte.setTextColor(Color.BLACK)
+        }
+
         holder.bind(item, context)
 
         holder.itemView.setOnClickListener {
+            selectedPos = position
             notifyDataSetChanged()
             listener.onClick(it, lineas[position])
         }
@@ -55,8 +73,6 @@ class CuentasRvAdapter(var lineas: MutableList<ListaLineasCuenta>, val context: 
             importe.text = String.format("%.2f", dImporte)
         }
     }
-
-
 
 
 }

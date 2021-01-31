@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:background="#FFFFFFFF"
     android:orientation="horizontal"
-    android:padding="5dp"
     tools:ignore="MissingDefaultResource">
 
 
@@ -14,8 +13,11 @@
         android:id="@+id/tvCantidad"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.15"
-        android:text="@string/cantidad"
+        android:layout_weight="0.1"
+        android:background="@drawable/mi_borde"
+        android:gravity="end"
+        android:paddingEnd="5dp"
+        android:text="Cant"
         android:textSize="16sp" />
 
     <TextView
@@ -23,6 +25,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.7"
+        android:background="@drawable/mi_borde"
+        android:paddingLeft="10dp"
         android:text="@string/descripcion"
         android:textSize="16sp" />
 
@@ -30,7 +34,10 @@
         android:id="@+id/tvImporte"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.15"
+        android:layout_weight="0.2"
+        android:background="@drawable/mi_borde"
+        android:gravity="end"
+        android:paddingEnd="5dp"
         android:text="@string/importe"
         android:textSize="16sp" />
 

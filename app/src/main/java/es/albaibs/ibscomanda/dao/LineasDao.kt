@@ -42,6 +42,20 @@ class LineasDao {
             }
         }
 
+
+        fun borrarLinea(conn: Connection, fSala: Short, fMesa: Short, fFraccion: Int, fLinea: Short): Boolean {
+            val comm: Statement = conn.createStatement()
+
+            return try {
+                comm.execute("DELETE FROM HTLineasCuentas WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Linea = $fLinea")
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+        }
+
+
         fun anyadirLinea(conn: Connection, registro: DatosLinea): Boolean {
             val comm: Statement = conn.createStatement()
 

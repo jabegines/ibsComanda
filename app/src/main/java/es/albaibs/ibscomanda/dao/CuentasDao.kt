@@ -21,12 +21,13 @@ class CuentasDao {
                 override fun run() {
                     try {
                         val rs = comm.executeQuery(
-                            "SELECT Orden, Cantidad, DescrTicket, Importe FROM HTLineasCuentas" +
+                            "SELECT Linea, Orden, Cantidad, DescrTicket, Importe FROM HTLineasCuentas" +
                                     " WHERE Sala = $fSala AND Mesa = $fMesa"
                         )
 
                         while (rs.next()) {
                             val lista = ListaLineasCuenta()
+                            lista.linea = rs.getShort("Linea")
                             lista.orden = rs.getInt("Orden")
                             lista.cantidad = rs.getString("Cantidad")
                             if (rs.getString("DescrTicket") != null)
