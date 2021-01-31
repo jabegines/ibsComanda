@@ -34,6 +34,8 @@ class ListaGruposModif {
 }
 
 class ListaModificadores {
+    var numeroModif: Int = 0
+    var grupoModif: Short = 0
     var modificador: String = ""
     var esArticulo: String = ""
     var dosis: String = ""

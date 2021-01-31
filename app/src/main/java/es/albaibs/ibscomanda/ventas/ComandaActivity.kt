@@ -64,7 +64,6 @@ class ComandaActivity: AppCompatActivity() {
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         fPuesto = prefs.getString("terminal", "0")?.toShort() ?: 0
         fUsuario = prefs.getString("usuario", "0")?.toShort() ?: 0
-
         fTarifa = ConfiguracionesDao.getEntero(connInf, "HOSTELERIA", "TARIFAPRECIOS")
         val i = intent
         fSala = i.getStringExtra("sala").toShort()
@@ -226,6 +225,11 @@ class ComandaActivity: AppCompatActivity() {
             registro.formatoId = fFormatoId
 
             LineasDao.anyadirLinea(connGes, registro)
+
+            if (lModificadores.size > 0) {
+                ModificadoresDao.anyadirModificadores(connGes, registro, lModificadores)
+            }
+
             fLinea++
         }
 
@@ -376,11 +380,13 @@ class ComandaActivity: AppCompatActivity() {
                 while (x <= numModificadores) {
                     val lModif = data?.getStringArrayListExtra("listaModif$x") ?: emptyList<String>()
                     val listaModif = ListaModificadores()
-                    listaModif.modificador = lModif[0]
-                    listaModif.esArticulo = lModif[1]
-                    listaModif.dosis = lModif[2]
-                    listaModif.incrPrecio = lModif[3]
-                    listaModif.descripcion = lModif[4]
+                    listaModif.numeroModif = x
+                    listaModif.grupoModif = lModif[0].toShort()
+                    listaModif.modificador = lModif[1]
+                    listaModif.esArticulo = lModif[2]
+                    listaModif.dosis = lModif[3]
+                    listaModif.incrPrecio = lModif[4]
+                    listaModif.descripcion = lModif[5]
                     lModificadores.add(listaModif)
                     x++
                 }

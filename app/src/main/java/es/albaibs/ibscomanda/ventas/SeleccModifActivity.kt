@@ -131,6 +131,7 @@ class SeleccModifActivity: AppCompatActivity() {
             returnIntent.putExtra("numModificadores", lModSelecc.size)
             for (modificador in lModSelecc) {
                 val mArrayList: MutableList<String> = ArrayList()
+                mArrayList.add(modificador.grupoModif.toString())
                 mArrayList.add(modificador.modificador)
                 mArrayList.add(modificador.esArticulo)
                 mArrayList.add(modificador.dosis)

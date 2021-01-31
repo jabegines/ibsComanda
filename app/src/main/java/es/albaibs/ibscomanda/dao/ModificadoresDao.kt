@@ -1,6 +1,7 @@
 package es.albaibs.ibscomanda.dao
 
 import android.os.HandlerThread
+import es.albaibs.ibscomanda.varios.DatosLinea
 import es.albaibs.ibscomanda.varios.ListaModificadores
 import java.sql.Connection
 import java.sql.Statement
@@ -10,6 +11,40 @@ import java.util.concurrent.CountDownLatch
 class ModificadoresDao {
 
     companion object {
+
+        fun anyadirModificadores(conn: Connection, registro: DatosLinea, lModificadores: MutableList<ListaModificadores>): Boolean {
+            val comm: Statement = conn.createStatement()
+
+            return try {
+                val lineaDeMenu = 0
+
+                for (listModif in lModificadores) {
+                    val esArticulo = listModif.esArticulo == "T"
+                    val articuloId = if (esArticulo) "0" else listModif.modificador
+                    //val codigo = " "
+                    val cantidad = "1.0"
+                    val dosis = if (listModif.dosis == "") "0.0" else listModif.dosis
+                    val flag = 12
+                    val mitad = 0
+
+                    val cadena = "INSERT INTO HTLineasModif (Sala, Mesa, Fraccion, Linea, NumeroModif, LineaDeMenu, Articulo, Comentario," +
+                            " Descripcion, Cantidad, Dosis, IncrPrecio, EsArticulo, Flag, GrupoModif, Mitad)" +
+                            " VALUES (" + registro.sala + ", " + registro.mesa + ", " + registro.fraccion + ", " + registro.linea +
+                            ", " + listModif.numeroModif + ", " + lineaDeMenu + ", " + articuloId + ", " + listModif.modificador +
+                            ", '" + listModif.descripcion + "', " + cantidad + ", " + dosis +
+                            ", " + listModif.incrPrecio + ", '" + listModif.esArticulo + "', " + flag + ", " + listModif.grupoModif +
+                            ", " + mitad + ")"
+
+                    comm.execute(cadena)
+                }
+                true
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+
+        }
 
         fun getModificadores(conn: Connection, queGrupo: Short): List<ListaModificadores> {
             val listaModif = emptyList<ListaModificadores>().toMutableList()
@@ -31,6 +66,7 @@ class ModificadoresDao {
 
                         while (rs.next()) {
                             val lista = ListaModificadores()
+                            lista.grupoModif = queGrupo
                             lista.modificador = rs.getString("Modificador")
                             lista.esArticulo = rs.getString("EsArticulo")
                             if (rs.getString("Dosis") != null) lista.dosis = rs.getString("Dosis")
