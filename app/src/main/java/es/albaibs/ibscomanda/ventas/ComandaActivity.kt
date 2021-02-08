@@ -64,6 +64,7 @@ class ComandaActivity: AppCompatActivity() {
         val i = intent
         fSala = i.getStringExtra("sala").toShort()
         fMesa = i.getStringExtra("mesa").toShort()
+        lModificadores = emptyList<ListaModificadores>().toMutableList()
 
         inicializarControles()
         prepararGruposVta()
@@ -95,6 +96,7 @@ class ComandaActivity: AppCompatActivity() {
     private fun prepararGruposVta() {
         fVistaAnterior = fVistaActual
         fVistaActual = VIENDO_GRUPOS
+        tvNombreGrupo.text = ""
         btnGrupos.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
         btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null))
         setRVGrupos()
@@ -103,7 +105,7 @@ class ComandaActivity: AppCompatActivity() {
     private fun setRVGrupos() {
         fAdptGrupos = GruposVtaRvAdapter(getGrupos(), this, object : GruposVtaRvAdapter.OnItemClickListener {
                 override fun onClick(view: View, data: ListaGruposVta) {
-                    prepararArticulosGrupo(data.grupoId)
+                    prepararArticulosGrupo(data.grupoId, data.descripcion)
                 }
             })
 
@@ -117,10 +119,11 @@ class ComandaActivity: AppCompatActivity() {
     }
 
 
-    private fun prepararArticulosGrupo(queGrupo: Int) {
+    private fun prepararArticulosGrupo(queGrupo: Int, queDescr: String) {
         fVistaAnterior = fVistaActual
         fVistaActual = VIENDO_ARTICULOS
         fGrupoActual = queGrupo
+        tvNombreGrupo.text = queDescr
         btnGrupos.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.grupos, null))
         btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null))
         setRVArticulos(queGrupo)
