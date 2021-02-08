@@ -2,10 +2,13 @@ package es.albaibs.ibscomanda.ventas
 
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.DBConnection
+import es.albaibs.ibscomanda.R
 import es.albaibs.ibscomanda.dao.CuentasDao
 import es.albaibs.ibscomanda.dao.LineasDao
 import es.albaibs.ibscomanda.databinding.VerCuentaActivityBinding
@@ -81,5 +84,66 @@ class VerCuentaActivity: AppCompatActivity() {
             }
         }
     }
+
+
+    fun modifCantidad(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+
+        if (fAdapter.selectedPos > -1) {
+
+            val builder = AlertDialog.Builder(this)
+            val inflater = layoutInflater
+            builder.setTitle("Introducir cantidad")
+            val dialogLayout = inflater.inflate(R.layout.alert_dialog_pedir_cant, null)
+            val editText = dialogLayout.findViewById<EditText>(R.id.editText)
+            editText.requestFocus()
+            builder.setView(dialogLayout)
+            builder.setPositiveButton("OK") { _, _ ->
+                doAsync {
+                    LineasDao.modifCantidadLinea(connGes, fSala, fMesa, 0, lineaActual.linea, editText.text.toString())
+
+                    uiThread {
+                        fAdapter.lineas = getLineasCuenta()
+                        fAdapter.notifyDataSetChanged()
+                        fAdapter.selectedPos = -1
+                    }
+                }
+            }
+            builder.setNegativeButton("Cancelar") { _, _ -> }
+            builder.show()
+        }
+    }
+
+    fun subirOrden(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+
+        doAsync{
+            val quePosicion = fAdapter.selectedPos
+            LineasDao.subirOrden(connGes, fSala, fMesa, 0, lineaActual.linea)
+
+            uiThread {
+                fAdapter.lineas = getLineasCuenta()
+                fAdapter.notifyDataSetChanged()
+                fAdapter.selectedPos = quePosicion-1
+            }
+        }
+    }
+
+    fun bajarOrden(view: View) {
+        view.getTag(0)          // Para que no dé warning el compilador
+
+        doAsync{
+            val quePosicion = fAdapter.selectedPos
+            LineasDao.bajarOrden(connGes, fSala, fMesa, 0, lineaActual.linea)
+
+            uiThread {
+                fAdapter.lineas = getLineasCuenta()
+                fAdapter.notifyDataSetChanged()
+                fAdapter.selectedPos = quePosicion+1
+            }
+        }
+    }
+
+
 
 }

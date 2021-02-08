@@ -42,6 +42,85 @@ class LineasDao {
             }
         }
 
+        fun subirOrden(conn: Connection, fSala: Short, fMesa: Short, fFraccion: Int, fLinea: Short): Boolean {
+            val comm: Statement = conn.createStatement()
+
+            return try {
+                var rs = comm.executeQuery("SELECT Orden FROM HTLineasCuentas WHERE Sala = $fSala AND Mesa = $fMesa" +
+                        " AND Fraccion = $fFraccion AND Linea = $fLinea")
+                if (rs.next()) {
+                    val queOrden = rs.getShort("Orden")
+
+                    // Vemos si tenemos alguna línea con un orden más bajo
+                    rs = comm.executeQuery(
+                        "SELECT Orden FROM HTLineasCuentas WHERE Sala = $fSala AND Mesa = $fMesa" +
+                                " AND Fraccion = $fFraccion AND Orden = $queOrden-1"
+                    )
+                    if (rs.next()) {
+                        comm.execute("UPDATE HTLineasCuentas SET Orden = -1" +
+                                    " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Linea = $fLinea")
+
+                        comm.execute("UPDATE HTLineasCuentas SET Orden = $queOrden" +
+                                    " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Orden = $queOrden-1")
+
+                        comm.execute("UPDATE HTLineasCuentas SET Orden = $queOrden-1" +
+                                    " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Linea = $fLinea")
+                    }
+                }
+                true
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+        }
+
+
+        fun bajarOrden(conn: Connection, fSala: Short, fMesa: Short, fFraccion: Int, fLinea: Short): Boolean {
+            val comm: Statement = conn.createStatement()
+
+            return try {
+                var rs = comm.executeQuery("SELECT Orden FROM HTLineasCuentas WHERE Sala = $fSala AND Mesa = $fMesa" +
+                        " AND Fraccion = $fFraccion AND Linea = $fLinea")
+                if (rs.next()) {
+                    val queOrden = rs.getShort("Orden")
+
+                    // Vemos si tenemos alguna línea con un orden más alto
+                    rs = comm.executeQuery("SELECT Orden FROM HTLineasCuentas WHERE Sala= $fSala AND Mesa = $fMesa" +
+                            " AND Fraccion = $fFraccion AND Orden = $queOrden+1")
+                    if (rs.next()) {
+
+                        comm.execute("UPDATE HTLineasCuentas SET Orden = -1" +
+                                    " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Linea = $fLinea")
+
+                        comm.execute("UPDATE HTLineasCuentas SET Orden = $queOrden" +
+                                    " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Orden = $queOrden+1")
+
+                        comm.execute("UPDATE HTLineasCuentas SET Orden = $queOrden+1" +
+                                    " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Linea = $fLinea")
+                    }
+                }
+                true
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+        }
+
+
+        fun modifCantidadLinea(conn: Connection, fSala: Short, fMesa: Short, fFraccion: Int, fLinea: Short, queCantidad: String): Boolean {
+            val comm: Statement = conn.createStatement()
+            return try {
+                comm.execute("UPDATE HTLineasCuentas SET Cantidad = $queCantidad" +
+                        " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Linea = $fLinea")
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+        }
+
 
         fun borrarLinea(conn: Connection, fSala: Short, fMesa: Short, fFraccion: Int, fLinea: Short): Boolean {
             val comm: Statement = conn.createStatement()

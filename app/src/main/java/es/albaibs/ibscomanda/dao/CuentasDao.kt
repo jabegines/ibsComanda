@@ -22,7 +22,8 @@ class CuentasDao {
                     try {
                         val rs = comm.executeQuery(
                             "SELECT Linea, Orden, Cantidad, DescrTicket, Importe FROM HTLineasCuentas" +
-                                    " WHERE Sala = $fSala AND Mesa = $fMesa"
+                                    " WHERE Sala = $fSala AND Mesa = $fMesa" +
+                                    " ORDER BY Orden"
                         )
 
                         while (rs.next()) {

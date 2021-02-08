@@ -65,7 +65,9 @@ class VerCuentaRvAdapter(var lineas: MutableList<ListaLineasCuenta>, val context
 
         fun bind(linea: ListaLineasCuenta, context: Context) {
             val dCantidad = linea.cantidad.toDouble()
-            cantidad.text = String.format("%.0f", dCantidad)
+            val parteDecimal = dCantidad % 1
+            if (parteDecimal > 0.0) cantidad.text = String.format("%.3f", dCantidad)
+            else cantidad.text = String.format("%.0f", dCantidad)
 
             descripcion.text = linea.descripcion
 
