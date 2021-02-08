@@ -12,6 +12,22 @@ class LineasDao {
 
     companion object {
 
+        fun dimeMaxOrden(conn: Connection, fSala: Short, fMesa: Short): Int {
+            val comm: Statement = conn.createStatement()
+
+            return try {
+                val rs = comm.executeQuery("SELECT MAX(Orden) MaxOrden FROM HTLineasCuentas WHERE Sala = $fSala AND Mesa = $fMesa")
+                return if (rs.next())
+                    rs.getInt("MaxOrden") + 1
+                else
+                    0
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                0
+            }
+        }
+
         fun getUltimaLinea(conn: Connection, fSala: Short, fMesa: Short): Int {
             val comm: Statement = conn.createStatement()
 
@@ -22,7 +38,7 @@ class LineasDao {
                 else
                     0
 
-            } catch (e:Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace()
                 0
             }
@@ -52,18 +68,17 @@ class LineasDao {
                     val queOrden = rs.getShort("Orden")
 
                     // Vemos si tenemos alguna línea con un orden más bajo
-                    rs = comm.executeQuery(
-                        "SELECT Orden FROM HTLineasCuentas WHERE Sala = $fSala AND Mesa = $fMesa" +
-                                " AND Fraccion = $fFraccion AND Orden = $queOrden-1"
-                    )
+                    rs = comm.executeQuery("SELECT Max(Orden) MaxOrden FROM HTLineasCuentas WHERE Sala = $fSala AND Mesa = $fMesa" +
+                                " AND Fraccion = $fFraccion AND Orden < $queOrden")
                     if (rs.next()) {
+                        val queMaxOrden = rs.getShort("MaxOrden")
                         comm.execute("UPDATE HTLineasCuentas SET Orden = -1" +
                                     " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Linea = $fLinea")
 
-                        comm.execute("UPDATE HTLineasCuentas SET Orden = $queOrden" +
-                                    " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Orden = $queOrden-1")
+                        comm.execute("UPDATE HTLineasCuentas SET Orden = $queMaxOrden+1" +
+                                    " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Orden = $queMaxOrden")
 
-                        comm.execute("UPDATE HTLineasCuentas SET Orden = $queOrden-1" +
+                        comm.execute("UPDATE HTLineasCuentas SET Orden = $queMaxOrden" +
                                     " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Linea = $fLinea")
                     }
                 }
@@ -86,17 +101,17 @@ class LineasDao {
                     val queOrden = rs.getShort("Orden")
 
                     // Vemos si tenemos alguna línea con un orden más alto
-                    rs = comm.executeQuery("SELECT Orden FROM HTLineasCuentas WHERE Sala= $fSala AND Mesa = $fMesa" +
-                            " AND Fraccion = $fFraccion AND Orden = $queOrden+1")
+                    rs = comm.executeQuery("SELECT MIN(Orden) MinOrden FROM HTLineasCuentas WHERE Sala= $fSala AND Mesa = $fMesa" +
+                            " AND Fraccion = $fFraccion AND Orden > $queOrden")
                     if (rs.next()) {
-
+                        val queMinOrden = rs.getShort("MinOrden")
                         comm.execute("UPDATE HTLineasCuentas SET Orden = -1" +
                                     " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Linea = $fLinea")
 
-                        comm.execute("UPDATE HTLineasCuentas SET Orden = $queOrden" +
-                                    " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Orden = $queOrden+1")
+                        comm.execute("UPDATE HTLineasCuentas SET Orden = $queMinOrden-1" +
+                                    " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Orden = $queMinOrden")
 
-                        comm.execute("UPDATE HTLineasCuentas SET Orden = $queOrden+1" +
+                        comm.execute("UPDATE HTLineasCuentas SET Orden = $queMinOrden" +
                                     " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Linea = $fLinea")
                     }
                 }

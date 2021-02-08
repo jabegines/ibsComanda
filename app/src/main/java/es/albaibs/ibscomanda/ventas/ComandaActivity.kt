@@ -195,7 +195,7 @@ class ComandaActivity: AppCompatActivity() {
             registro.mesa = fMesa
             registro.fraccion = 0
             registro.linea = fLinea
-            registro.orden = fLinea
+            registro.orden = LineasDao.dimeMaxOrden(connGes, fSala, fMesa)
             registro.articuloId = data.articuloId
             registro.codigoArt = data.codigo
             registro.descripcion = data.descripcion
