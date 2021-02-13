@@ -46,7 +46,7 @@ class ArticulosDao {
             val uiThread = object : HandlerThread("UIHandler") {
                 override fun run() {
                     try {
-                        val rs = comm.executeQuery("SELECT A.Articulo, B.Codigo, B.Descripcion, B.DescripcionTicket, B.Flag1 FROM HTGruposArticulo A" +
+                        val rs = comm.executeQuery("SELECT A.Articulo, B.Codigo, B.Descripcion, B.DescripcionTicket, B.Flag1, B.Flag2 FROM HTGruposArticulo A" +
                                 " LEFT JOIN Articulos B ON B.Articulo = A.Articulo" +
                                 " WHERE A.Grupo = " + queGrupo +
                                 " ORDER BY B.Descripcion")
@@ -58,6 +58,7 @@ class ArticulosDao {
                             lista.descripcion = rs.getString("Descripcion")
                             lista.descrTicket = rs.getString("DescripcionTicket")
                             lista.flag1 = rs.getInt("Flag1")
+                            lista.flag2 = rs.getInt("Flag2")
                             listaArticulos.add(lista)
                         }
                         latch.countDown()

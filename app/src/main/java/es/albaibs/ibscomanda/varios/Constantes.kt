@@ -11,6 +11,9 @@ const val VIENDO_ARTICULOS = 2
 // Flag1 artículos
 const val FLAGARTICULO_USARFORMATOS = 4096
 
+// Flag2 artículos
+const val FLAGARTICULO_ES_MENU = 8192
+
 
 class ListaSalas {
     var salaId: Short = 0
@@ -49,6 +52,7 @@ class ListaArticulosGrupo {
     var descripcion: String = ""
     var descrTicket: String = ""
     var flag1: Int = 0
+    var flag2: Int = 0
 }
 
 class ListaLineasCuenta {

@@ -49,6 +49,7 @@ class ComandaActivity: AppCompatActivity() {
 
     private val fRequestSelecFormato = 1
     private val fRequestSelecModif = 2
+    private val fRequestSelecMenu = 3
 
 
 
@@ -135,12 +136,16 @@ class ComandaActivity: AppCompatActivity() {
                 override fun onClick(view: View, data: ListaArticulosGrupo) {
                     fPosicionActual = fAdptArticulos.selectedPos
                     fFormatoId = 0
+                    // Vemos si el artículo es de menú
+                    if (data.flag2 and FLAGARTICULO_ES_MENU > 0) {
+                        seleccionarMenu(data)
+
                     // Vemos si el artículo tiene modificadores
-                    if (articuloTieneModif(data.articuloId)) {
+                    } else if (articuloTieneModif(data.articuloId)) {
                         seleccionarModif(data)
 
+                    // Si el artículo tiene formatos los pediremos
                     } else {
-                        // Si el artículo tiene formatos los pediremos
                         if (data.flag1 and FLAGARTICULO_USARFORMATOS > 0) {
                             fAdptArticulos.queCantidad = 1.0
                             seleccionarFormato(data)
@@ -163,6 +168,12 @@ class ComandaActivity: AppCompatActivity() {
         return ArticulosDao.getArticulosGrupo(connInf, queGrupo, fSala, fMesa)
     }
 
+    private fun seleccionarMenu(data: ListaArticulosGrupo) {
+        fDataActual = data
+        val i = Intent(this, SeleccMenuActivity::class.java)
+        i.putExtra("articuloId", data.articuloId)
+        startActivityForResult(i, fRequestSelecMenu)
+    }
 
     private fun seleccionarModif(data: ListaArticulosGrupo) {
         fDataActual = data
