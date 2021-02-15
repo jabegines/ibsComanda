@@ -1,10 +1,12 @@
 package es.albaibs.ibscomanda.ventas
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.R
 import es.albaibs.ibscomanda.varios.ListaGruposVta
@@ -42,10 +44,13 @@ class GruposVtaRvAdapter(var grupos: MutableList<ListaGruposVta>, val context: C
 
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        private val clLayout = itemView.findViewById(R.id.clGruposVta) as ConstraintLayout
         private val descripcion = itemView.findViewById(R.id.tvDescrGrupoVta) as TextView
 
         fun bind(grupo: ListaGruposVta, context: Context) {
+            //clLayout.setBackgroundColor(-30000 * grupo.grupoId)
             descripcion.text = grupo.descripcion
+            descripcion.setTextColor(-40000 * grupo.grupoId)
         }
     }
 }
