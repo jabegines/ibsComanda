@@ -61,6 +61,7 @@ class SeleccMenuActivity: AppCompatActivity() {
                 prepararRecModif()
             }
         })
+        fAdpGrupos.selectedPos = 0
 
         fRecGrupos.layoutManager = LinearLayoutManager(this)
         fRecGrupos.adapter= fAdpGrupos

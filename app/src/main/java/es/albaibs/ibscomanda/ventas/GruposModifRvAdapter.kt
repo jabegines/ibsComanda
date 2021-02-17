@@ -1,6 +1,7 @@
 package es.albaibs.ibscomanda.ventas
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,15 +9,23 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.R
 import es.albaibs.ibscomanda.varios.ListaGruposModif
+import kotlinx.android.synthetic.main.item_gruposvta_list.view.*
 
 
 class GruposModifRvAdapter(var grupos: List<ListaGruposModif>, val context: Context, var listener: OnItemClickListener): RecyclerView.Adapter<GruposModifRvAdapter.ViewHolder>() {
 
+    var selectedPos: Int = RecyclerView.NO_POSITION
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = grupos[position]
+
+        if (selectedPos == position) holder.itemView.tvDescrGrupoVta.setTextColor(Color.RED)
+        else holder.itemView.tvDescrGrupoVta.setTextColor(Color.BLACK)
+
         holder.bind(item, context)
 
         holder.itemView.setOnClickListener {
+            selectedPos = position
             notifyDataSetChanged()
             listener.onClick(it, grupos[position])
         }

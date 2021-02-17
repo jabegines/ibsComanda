@@ -50,7 +50,7 @@ class GruposVtaRvAdapter(var grupos: MutableList<ListaGruposVta>, val context: C
         fun bind(grupo: ListaGruposVta, context: Context) {
             //clLayout.setBackgroundColor(-30000 * grupo.grupoId)
             descripcion.text = grupo.descripcion
-            descripcion.setTextColor(-40000 * grupo.grupoId)
+            descripcion.setTextColor(-400000 * grupo.grupoId)
         }
     }
 }

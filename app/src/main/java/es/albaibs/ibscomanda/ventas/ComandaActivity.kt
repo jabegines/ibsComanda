@@ -138,10 +138,12 @@ class ComandaActivity: AppCompatActivity() {
                     fFormatoId = 0
                     // Vemos si el artículo es de menú
                     if (data.flag2 and FLAGARTICULO_ES_MENU > 0) {
+                        fAdptArticulos.queCantidad = 1.0
                         seleccionarMenu(data)
 
                     // Vemos si el artículo tiene modificadores
                     } else if (articuloTieneModif(data.articuloId)) {
+                        fAdptArticulos.queCantidad = 1.0
                         seleccionarModif(data)
 
                     // Si el artículo tiene formatos los pediremos
