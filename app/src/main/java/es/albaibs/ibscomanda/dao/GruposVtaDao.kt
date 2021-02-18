@@ -19,13 +19,14 @@ class GruposVtaDao {
             val uiThread = object : HandlerThread("UIHandler") {
                 override fun run() {
                     try {
-                        val rs = comm.executeQuery("SELECT Grupo, Descripcion FROM HTGruposVenta" +
+                        val rs = comm.executeQuery("SELECT Grupo, Descripcion, Texto FROM HTGruposVenta" +
                                                 " ORDER BY Descripcion")
 
                         while (rs.next()) {
                             val lista = ListaGruposVta()
-                            lista.grupoId = rs.getInt("GRUPO")
-                            lista.descripcion = rs.getString("DESCRIPCION")
+                            lista.grupoId = rs.getInt("Grupo")
+                            lista.descripcion = rs.getString("Descripcion")
+                            lista.texto = rs.getString("Texto")
                             listaGrupos.add(lista)
                         }
                         latch.countDown()

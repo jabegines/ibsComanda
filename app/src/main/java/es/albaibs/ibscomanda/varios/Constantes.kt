@@ -28,6 +28,7 @@ class ListaMesas {
 class ListaGruposVta {
     var grupoId: Int = 0
     var descripcion: String = ""
+    var texto: String? = null
 }
 
 
