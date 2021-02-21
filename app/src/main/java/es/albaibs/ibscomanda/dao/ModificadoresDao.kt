@@ -1,8 +1,7 @@
 package es.albaibs.ibscomanda.dao
 
 import android.os.HandlerThread
-import es.albaibs.ibscomanda.varios.DatosLinea
-import es.albaibs.ibscomanda.varios.ListaModificadores
+import es.albaibs.ibscomanda.varios.*
 import java.sql.Connection
 import java.sql.Statement
 import java.util.concurrent.CountDownLatch
@@ -21,16 +20,18 @@ class ModificadoresDao {
                 for (listModif in lModificadores) {
                     val esArticulo = listModif.esArticulo == "T"
                     val articuloId = if (esArticulo) listModif.modificador else "0"
-                    val codigo = "''"
+                    val comentarioId = if (esArticulo) "0" else listModif.modificador
                     val cantidad = "1.0"
                     val dosis = if (listModif.dosis == "") "0.0" else listModif.dosis
-                    val flag = 12
+                    var flag = 0
+                    if (listModif.esArticuloDeMenu == "T") flag = FLAGLINEAHOSTELERIA_ES_ARTICULO_DE_MENU + FLAGLINEAHOSTELERIA_IMPRESA
+                    if (!esArticulo) flag = FLAGLINEAHOSTELERIA_ES_MODIFICADOR + FLAGLINEAHOSTELERIA_IMPRESA
                     val mitad = 0
 
                     val cadena = "INSERT INTO HTLineasModif (Sala, Mesa, Fraccion, Linea, NumeroModif, LineaDeMenu, Articulo, Codigo, Comentario," +
                             " Descripcion, Cantidad, Dosis, IncrPrecio, EsArticulo, Flag, GrupoModif, Mitad)" +
                             " VALUES (" + registro.sala + ", " + registro.mesa + ", " + registro.fraccion + ", " + registro.linea +
-                            ", " + listModif.numeroModif + ", " + lineaDeMenu + ", " + articuloId + ", " + codigo + ", " + listModif.modificador +
+                            ", " + listModif.numeroModif + ", " + lineaDeMenu + ", " + articuloId + ", '" + listModif.codigo + "', " + comentarioId +
                             ", '" + listModif.descripcion + "', " + cantidad + ", " + dosis +
                             ", " + listModif.incrPrecio + ", '" + listModif.esArticulo + "', " + flag + ", " + listModif.grupoModif +
                             ", " + mitad + ")"
@@ -54,12 +55,12 @@ class ModificadoresDao {
             val uiThread = object : HandlerThread("UIHandler") {
                 override fun run() {
                     try {
-                        val rs = comm.executeQuery("SELECT A.Modificador, A.EsArticulo, A.Dosis, A.IncrPrecio, B.DescripcionTicket AS Descr" +
+                        val rs = comm.executeQuery("SELECT A.Modificador, A.EsArticulo, A.Dosis, A.IncrPrecio, B.Codigo, B.DescripcionTicket AS Descr" +
                                 " FROM HTModificadores A" +
                                 " LEFT JOIN Articulos B ON A.Modificador = B.Articulo" +
                                 " WHERE A.EsArticulo = 'T' AND  A.Grupo = $queGrupo" +
                                 " UNION " +
-                                " SELECT A.Modificador, A.EsArticulo, A.Dosis, A.IncrPrecio, B.Descripcion AS Descr" +
+                                " SELECT A.Modificador, A.EsArticulo, A.Dosis, A.IncrPrecio, CAST(B.Codigo AS VARCHAR) AS Codigo, B.Descripcion AS Descr" +
                                 " FROM HTModificadores A" +
                                 " LEFT JOIN HTComentarios B ON A.Modificador = B.Codigo" +
                                 " WHERE A.EsArticulo = 'F' AND A.Grupo = $queGrupo")
@@ -72,6 +73,7 @@ class ModificadoresDao {
                             if (rs.getString("Dosis") != null) lista.dosis = rs.getString("Dosis")
                             else lista.dosis = ""
                             lista.incrPrecio = rs.getString("IncrPrecio")
+                            lista.codigo = rs.getString("Codigo")
                             lista.descripcion = rs.getString("Descr")
                             listaModif.add(lista)
                         }

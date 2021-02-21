@@ -133,8 +133,11 @@ class SeleccModifActivity: AppCompatActivity() {
                 mArrayList.add(modificador.grupoModif.toString())
                 mArrayList.add(modificador.modificador)
                 mArrayList.add(modificador.esArticulo)
+                mArrayList.add("F")
                 mArrayList.add(modificador.dosis)
                 mArrayList.add(modificador.incrPrecio)
+                if (modificador.esArticulo == "T") mArrayList.add(modificador.codigo)
+                else mArrayList.add("")
                 mArrayList.add(modificador.descripcion)
                 val lArrayList = mArrayList as ArrayList<String>?
                 returnIntent.putStringArrayListExtra("listaModif$x", lArrayList)

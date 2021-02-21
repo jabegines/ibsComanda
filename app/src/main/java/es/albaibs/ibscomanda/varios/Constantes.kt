@@ -14,6 +14,13 @@ const val FLAGARTICULO_USARFORMATOS = 4096
 // Flag2 artículos
 const val FLAGARTICULO_ES_MENU = 8192
 
+// Flag1 linea hostelería
+const val FLAGLINEAHOSTELERIA_ES_MODIFICADOR = 4
+const val FLAGLINEAHOSTELERIA_IMPRESA = 8
+const val FLAGLINEAHOSTELERIA_ES_MENU = 32
+const val FLAGLINEAHOSTELERIA_ES_ARTICULO_DE_MENU = 64
+
+
 
 class ListaSalas {
     var salaId: Short = 0
@@ -42,8 +49,10 @@ class ListaModificadores {
     var grupoModif: Short = 0
     var modificador: String = ""
     var esArticulo: String = ""
+    var esArticuloDeMenu: String = ""
     var dosis: String = ""
     var incrPrecio: String = ""
+    var codigo: String = ""
     var descripcion: String = ""
 }
 
@@ -52,6 +61,7 @@ class ListaArticulosGrupo {
     var codigo: String = ""
     var descripcion: String = ""
     var descrTicket: String = ""
+    var codigoIva: Short = 0
     var flag1: Int = 0
     var flag2: Int = 0
 }
@@ -100,9 +110,12 @@ class DatosLinea {
     var cantidad: String = ""
     var piezas: String = ""
     var precio: String = ""
+    var codigoDeIva: Short = 101
     var importe: String = ""
     var usuario: Short = 0
     var formatoId: Short = 0
+    var flag: Int = 0
+    var flag2: Int = 0
 }
 
 

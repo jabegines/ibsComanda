@@ -151,7 +151,7 @@ class ComandaActivity: AppCompatActivity() {
                         if (data.flag1 and FLAGARTICULO_USARFORMATOS > 0) {
                             fAdptArticulos.queCantidad = 1.0
                             seleccionarFormato(data)
-                        } else vender(data)
+                        } else vender(data, false)
                     }
                 }
         })
@@ -204,7 +204,7 @@ class ComandaActivity: AppCompatActivity() {
 
 
 
-    private fun vender(data: ListaArticulosGrupo) {
+    private fun vender(data: ListaArticulosGrupo, esMenu: Boolean) {
         doAsync {
             val registro = DatosLinea()
             registro.sala = fSala
@@ -219,9 +219,13 @@ class ComandaActivity: AppCompatActivity() {
             registro.cantidad = "1"
             registro.piezas = "0"
             registro.precio = dimePrecioArt(data.articuloId)
+            registro.codigoDeIva = data.codigoIva
             registro.importe = calculaImporte(registro)
+            if (esMenu) registro.flag = FLAGLINEAHOSTELERIA_IMPRESA + FLAGLINEAHOSTELERIA_ES_MENU
+            else registro.flag = FLAGLINEAHOSTELERIA_IMPRESA
             registro.usuario = fUsuario
             registro.formatoId = fFormatoId
+            registro.flag2 = 0
 
             LineasDao.anyadirLinea(connGes, registro)
 
@@ -347,7 +351,7 @@ class ComandaActivity: AppCompatActivity() {
         if (requestCode == fRequestSelecFormato) {
             if (resultCode == Activity.RESULT_OK) {
                 fFormatoId = data?.getShortExtra("formatoId", 0) ?: 0
-                vender(fDataActual)
+                vender(fDataActual, false)
             }
         }
         else if (requestCode == fRequestSelecModif) {
@@ -363,9 +367,11 @@ class ComandaActivity: AppCompatActivity() {
                     listaModif.grupoModif = lModif[0].toShort()
                     listaModif.modificador = lModif[1]
                     listaModif.esArticulo = lModif[2]
-                    listaModif.dosis = lModif[3]
-                    listaModif.incrPrecio = lModif[4]
-                    listaModif.descripcion = lModif[5]
+                    listaModif.esArticuloDeMenu = lModif[3]
+                    listaModif.dosis = lModif[4]
+                    listaModif.incrPrecio = lModif[5]
+                    listaModif.codigo = lModif[6]
+                    listaModif.descripcion = lModif[7]
                     lModificadores.add(listaModif)
                     x++
                 }
@@ -375,7 +381,32 @@ class ComandaActivity: AppCompatActivity() {
                     fAdptArticulos.queCantidad = 1.0
                     seleccionarFormato(fDataActual)
                 }
-                else vender(fDataActual)
+                else vender(fDataActual, false)
+            }
+        } else if (requestCode == fRequestSelecMenu) {
+            if (resultCode == Activity.RESULT_OK) {
+
+                lModificadores = emptyList<ListaModificadores>().toMutableList()
+                val numModificadores = data?.getIntExtra("numModificadores", 0) ?: 0
+                var x = 1
+                while (x <= numModificadores) {
+                    val lModif = data?.getStringArrayListExtra("listaArtMenu$x") ?: emptyList<String>()
+                    val listaModif = ListaModificadores()
+                    listaModif.numeroModif = x
+                    listaModif.grupoModif = lModif[0].toShort()
+                    listaModif.modificador = lModif[1]
+                    listaModif.esArticulo = lModif[2]
+                    listaModif.esArticuloDeMenu = lModif[3]
+                    listaModif.dosis = lModif[4]
+                    listaModif.incrPrecio = lModif[5]
+                    listaModif.codigo = lModif[6]
+                    listaModif.descripcion = lModif[7]
+                    lModificadores.add(listaModif)
+
+                    x++
+                }
+
+                vender(fDataActual, true)
             }
         }
     }

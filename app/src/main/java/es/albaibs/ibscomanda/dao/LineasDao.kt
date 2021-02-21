@@ -3,8 +3,12 @@ package es.albaibs.ibscomanda.dao
 import android.os.HandlerThread
 import es.albaibs.ibscomanda.varios.DatosCocina
 import es.albaibs.ibscomanda.varios.DatosLinea
+import net.sourceforge.jtds.jdbc.DateTime
 import java.sql.Connection
 import java.sql.Statement
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.util.*
 import java.util.concurrent.CountDownLatch
 
 
@@ -152,14 +156,19 @@ class LineasDao {
 
         fun anyadirLinea(conn: Connection, registro: DatosLinea): Boolean {
             val comm: Statement = conn.createStatement()
+            val tim = System.currentTimeMillis()
+            val df = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+            val queHoraPedido = df.format(tim)
+
 
             return try {
                 comm.execute("INSERT INTO HTLineasCuentas (Sala, Mesa, Fraccion, Linea, Orden, Articulo, Codigo, Descripcion, DescrTicket," +
-                        " Cantidad, Piezas, Precio, Importe, Formato, Usuario)" +
+                        " Cantidad, Piezas, Precio, TipoDeIva, Importe, Flag, Formato, Usuario, Flag2, HoraPedido)" +
                         " VALUES (" + registro.sala + ", " + registro.mesa + ", " + registro.fraccion + "," + registro.linea +
-                        ", " + registro.orden + ", " + registro.articuloId + ", " + registro.codigoArt + ", '" + registro.descripcion +
-                        "', '" + registro.descrTicket + "', " + registro.cantidad + ", " + registro.piezas + ", " + registro.precio +
-                        ", " + registro.importe + ", " + registro.formatoId + ", " + registro.usuario + ")")
+                        ", " + registro.orden + ", " + registro.articuloId + ", '" + registro.codigoArt + "', '" + registro.descripcion +
+                        "', '" + registro.descrTicket + "', " + registro.cantidad + ", " + registro.piezas + ", " + registro.precio + ", " + registro.codigoDeIva +
+                        ", " + registro.importe + "," + registro.flag + ", " + registro.formatoId + ", " + registro.usuario + ", " + registro.flag2 +
+                        ", '" + queHoraPedido + "')")
 
             } catch (e: Exception) {
                 e.printStackTrace()

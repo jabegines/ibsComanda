@@ -129,14 +129,16 @@ class SeleccMenuActivity: AppCompatActivity() {
         try {
             var x = 1
             val returnIntent = Intent()
-            returnIntent.putExtra("numArticulos", lArtMenuSelecc.size)
+            returnIntent.putExtra("numModificadores", lArtMenuSelecc.size)
             for (modificador in lArtMenuSelecc) {
                 val mArrayList: MutableList<String> = ArrayList()
                 mArrayList.add(modificador.grupoModif.toString())
                 mArrayList.add(modificador.modificador)
                 mArrayList.add(modificador.esArticulo)
+                mArrayList.add("T")
                 mArrayList.add(modificador.dosis)
                 mArrayList.add(modificador.incrPrecio)
+                mArrayList.add(modificador.codigo)
                 mArrayList.add(modificador.descripcion)
                 val lArrayList = mArrayList as ArrayList<String>?
                 returnIntent.putStringArrayListExtra("listaArtMenu$x", lArrayList)
