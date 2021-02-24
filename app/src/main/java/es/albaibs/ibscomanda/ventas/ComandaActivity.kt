@@ -221,8 +221,8 @@ class ComandaActivity: AppCompatActivity() {
             registro.precio = dimePrecioArt(data.articuloId)
             registro.codigoDeIva = data.codigoIva
             registro.importe = calculaImporte(registro)
-            if (esMenu) registro.flag = FLAGLINEAHOSTELERIA_IMPRESA + FLAGLINEAHOSTELERIA_ES_MENU
-            else registro.flag = FLAGLINEAHOSTELERIA_IMPRESA
+            //if (esMenu) registro.flag = FLAGLINEAHOSTELERIA_IMPRESA + FLAGLINEAHOSTELERIA_ES_MENU
+            //else registro.flag = FLAGLINEAHOSTELERIA_IMPRESA
             registro.usuario = fUsuario
             registro.formatoId = fFormatoId
             registro.flag2 = 0
@@ -299,7 +299,7 @@ class ComandaActivity: AppCompatActivity() {
             if (LineasDao.sinLineas(connInf, fSala, fMesa)) {
                 CuentasDao.borrarCuenta(connGes, fSala, fMesa)
             } else {
-                //imprimirCocina()
+                imprimirCocina()
             }
         }
 
