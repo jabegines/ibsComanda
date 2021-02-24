@@ -49,32 +49,34 @@ class GruposVtaRvAdapter(var grupos: MutableList<ListaGruposVta>, val context: C
         private val descripcion = itemView.findViewById(R.id.tvDescrGrupoVta) as TextView
 
         fun bind(grupo: ListaGruposVta, context: Context) {
-            val pos1 = grupo.texto?.indexOf("BKCOL=", 0, true)?.plus(6) ?: 0
-            val pos2 = grupo.texto?.indexOf("FONTCOL=", 0, true)?.plus(9) ?: 0
-            val pos3 = grupo.texto?.indexOf("FONT=", 0, true) ?: 0
+            val queTexto = grupo.texto ?: ""
+            if (queTexto != "") {
+                val pos1 = queTexto.indexOf("BKCOL=", 0, true).plus(6)
+                val pos2 = queTexto.indexOf("FONTCOL=", 0, true).plus(9)
+                val pos3 = queTexto.indexOf("FONT=", 0, true)
 
-            var colorBack = 0
-            var colorTexto = 0
-            if (pos1 > 0) {
-                colorBack = grupo.texto?.substring(pos1, pos2-10)?.toInt() ?: 0
-                colorTexto = grupo.texto?.substring(pos2-1, pos3-1)?.toInt() ?: 0
-            }
+                var colorBack = 0
+                var colorTexto = 0
+                if (pos1 > 0) {
+                    colorBack = queTexto.substring(pos1, pos2 - 10).toInt()
+                    colorTexto = queTexto.substring(pos2 - 1, pos3 - 1).toInt()
+                }
 
-            descripcion.text = grupo.descripcion
-
-            var queHex = Integer.toHexString(colorTexto)
-            if (queHex.length < 6) queHex = queHex.padEnd(6, '0')
-
-            var queColor = "#$queHex"
-            descripcion.setTextColor(Color.parseColor(queColor))
-
-            if (colorBack > 0) {
-                queHex = Integer.toHexString(colorBack)
+                var queHex = Integer.toHexString(colorTexto)
                 if (queHex.length < 6) queHex = queHex.padEnd(6, '0')
 
-                queColor = "#$queHex"
-                clLayout.setBackgroundColor(Color.parseColor(queColor))
+                var queColor = "#$queHex"
+                descripcion.setTextColor(Color.parseColor(queColor))
+
+                if (colorBack > 0) {
+                    queHex = Integer.toHexString(colorBack)
+                    if (queHex.length < 6) queHex = queHex.padEnd(6, '0')
+
+                    queColor = "#$queHex"
+                    clLayout.setBackgroundColor(Color.parseColor(queColor))
+                }
             }
+            descripcion.text = grupo.descripcion
         }
     }
 }

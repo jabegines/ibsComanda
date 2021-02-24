@@ -1,10 +1,12 @@
 package es.albaibs.ibscomanda.ventas
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.R
 import es.albaibs.ibscomanda.varios.ListaArticulosGrupo
@@ -58,9 +60,37 @@ class ArticulosGrupoRvAdapter(var articulos: MutableList<ListaArticulosGrupo>, v
 
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        private val clLayout = itemView.findViewById(R.id.clArticulosVta) as ConstraintLayout
         private val descripcion = itemView.findViewById(R.id.tvDescrArt) as TextView
 
         fun bind(articulo: ListaArticulosGrupo, context: Context) {
+            val queTexto = articulo.texto ?: ""
+            if (queTexto != "") {
+                val pos1 = queTexto.indexOf("BKCOL=", 0, true).plus(6)
+                val pos2 = queTexto.indexOf("FONTCOL=", 0, true).plus(9)
+                val pos3 = queTexto.indexOf("FONT=", 0, true)
+
+                var colorBack = 0
+                var colorTexto = 0
+                if (pos1 > 0) {
+                    colorBack = queTexto.substring(pos1, pos2 - 10).toInt()
+                    colorTexto = queTexto.substring(pos2 - 1, pos3 - 1).toInt()
+                }
+
+                var queHex = Integer.toHexString(colorTexto)
+                if (queHex.length < 6) queHex = queHex.padEnd(6, '0')
+
+                var queColor = "#$queHex"
+                descripcion.setTextColor(Color.parseColor(queColor))
+
+                if (colorBack > 0) {
+                    queHex = Integer.toHexString(colorBack)
+                    if (queHex.length < 6) queHex = queHex.padEnd(6, '0')
+
+                    queColor = "#$queHex"
+                    clLayout.setBackgroundColor(Color.parseColor(queColor))
+                }
+            }
             descripcion.text = articulo.descripcion
         }
     }

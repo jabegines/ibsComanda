@@ -64,6 +64,7 @@ class ListaArticulosGrupo {
     var codigoIva: Short = 0
     var flag1: Int = 0
     var flag2: Int = 0
+    var texto: String? = null
 }
 
 class ListaLineasCuenta {
