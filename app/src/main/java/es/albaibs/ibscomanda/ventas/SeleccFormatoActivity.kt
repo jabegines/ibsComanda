@@ -47,6 +47,7 @@ class SeleccFormatoActivity: AppCompatActivity() {
             override fun onClick(view: View, data: ListaFormatos) {
                 val returnIntent = Intent()
                 returnIntent.putExtra("formatoId", data.formatoId)
+                returnIntent.putExtra("descrFto", data.descripcion)
                 setResult(RESULT_OK, returnIntent)
                 finish()
             }

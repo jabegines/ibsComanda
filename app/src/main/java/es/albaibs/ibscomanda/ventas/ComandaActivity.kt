@@ -221,8 +221,8 @@ class ComandaActivity: AppCompatActivity() {
             registro.precio = dimePrecioArt(data.articuloId)
             registro.codigoDeIva = data.codigoIva
             registro.importe = calculaImporte(registro)
-            //if (esMenu) registro.flag = FLAGLINEAHOSTELERIA_IMPRESA + FLAGLINEAHOSTELERIA_ES_MENU
-            //else registro.flag = FLAGLINEAHOSTELERIA_IMPRESA
+            if (esMenu) registro.flag = FLAGLINEAHOSTELERIA_IMPRESA + FLAGLINEAHOSTELERIA_ES_MENU
+            else registro.flag = FLAGLINEAHOSTELERIA_IMPRESA
             registro.usuario = fUsuario
             registro.formatoId = fFormatoId
             registro.flag2 = 0
@@ -281,7 +281,7 @@ class ComandaActivity: AppCompatActivity() {
     }
 
     private fun dimePrecioArt(articuloId: Int): String {
-        var quePrecio = TarifasDao.getPrecio(connInf, fTarifa, articuloId)
+        var quePrecio = TarifasDao.getPrecio(connInf, fTarifa, fFormatoId, articuloId)
         if (quePrecio == "") quePrecio = "0.0"
 
         return quePrecio
@@ -351,6 +351,8 @@ class ComandaActivity: AppCompatActivity() {
         if (requestCode == fRequestSelecFormato) {
             if (resultCode == Activity.RESULT_OK) {
                 fFormatoId = data?.getShortExtra("formatoId", 0) ?: 0
+                val queDescrFto = data?.getStringExtra("descrFto") ?: ""
+                if (queDescrFto != "") fDataActual.descripcion = queDescrFto + " " + fDataActual.descripcion
                 vender(fDataActual, false)
             }
         }
