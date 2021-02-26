@@ -100,6 +100,8 @@ class ComandaActivity: AppCompatActivity() {
         tvNombreGrupo.text = ""
         btnGrupos.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
         btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null))
+        btnAnyadir.visibility = View.GONE
+        btnRestar.visibility = View.GONE
         setRVGrupos()
     }
 
@@ -127,6 +129,8 @@ class ComandaActivity: AppCompatActivity() {
         tvNombreGrupo.text = queDescr
         btnGrupos.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.grupos, null))
         btnVerCuenta.setCompoundDrawablesWithIntrinsicBounds(null, null, null, ResourcesCompat.getDrawable(resources, R.drawable.cuenta, null))
+        btnAnyadir.visibility = View.VISIBLE
+        btnRestar.visibility = View.VISIBLE
         setRVArticulos(queGrupo)
     }
 
