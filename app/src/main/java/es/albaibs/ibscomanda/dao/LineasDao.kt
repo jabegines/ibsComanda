@@ -3,11 +3,9 @@ package es.albaibs.ibscomanda.dao
 import android.os.HandlerThread
 import es.albaibs.ibscomanda.varios.DatosCocina
 import es.albaibs.ibscomanda.varios.DatosLinea
-import net.sourceforge.jtds.jdbc.DateTime
 import java.sql.Connection
 import java.sql.Statement
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.CountDownLatch
 

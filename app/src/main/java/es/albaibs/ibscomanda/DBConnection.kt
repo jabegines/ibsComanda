@@ -17,44 +17,46 @@ class DBConnection {
         var connectionGES: Connection? = null
         var connectionINF: Connection? = null
         var connectionSYS: Connection? = null
+        var connectionDB: Connection? = null
 
         fun conectar(context: Context, bdInf: Boolean): Connection {
             val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
             val prefURL = "jdbc:jtds:sqlserver:"
-            val USER = "sa"
-            val PASS = "albamaster"
+            val usuario = "sa"
+            val password = "albamaster"
             lateinit var connSys: Connection
+            lateinit var connDB: Connection
             lateinit var conn: Connection
             try {
                 // En primer lugar nos tendremos que conectar a la base de datos del sistema ALBASYSxx para, a través
                 // de la tabla Aplicaciones, averiguar el nombre de la base de datos a la que tenemos que conectarnos.
                 // Si lo que queremos es conectarnos a la base de datos de informes (ALBAINF) no tendremos que hacer nada de esto.
                 val quePrefijo = prefs.getString("prefijo", "") ?: ""
-                var BD: String
+                var queBaseDatos: String
                 var queSistema = prefs.getString("sistema", "00") ?: "00"
                 queSistema = ponerCeros(queSistema, 2)
                 //var queTerminal = ponerCeros(prefs.getString("terminal", ""), 3)
 
                 if (bdInf) {
-                    if (quePrefijo != "") BD = quePrefijo + "_ALBAINF" + queSistema
-                    else BD = "ALBAINF$queSistema"
+                    queBaseDatos = if (quePrefijo != "") quePrefijo + "_ALBAINF" + queSistema
+                    else "ALBAINF$queSistema"
 
-                    val URL = prefURL + "//" + prefs.getString("ip_servidor", "") + ":" + prefs.getString("puerto_servidor", "") + "/" + BD + ";"
+                    val queURL = prefURL + "//" + prefs.getString("ip_servidor", "") + ":" + prefs.getString("puerto_servidor", "") + "/" + queBaseDatos + ";"
 
                     Driver().javaClass
-                    conn = DriverManager.getConnection(URL, USER, PASS)
+                    conn = DriverManager.getConnection(queURL, usuario, password)
                     connectionINF = conn
 
                 } else {
-                    if (quePrefijo != "") BD = quePrefijo + "_ALBASYS" + queSistema
-                    else BD = "ALBASYS" + queSistema
+                    queBaseDatos = if (quePrefijo != "") quePrefijo + "_ALBASYS" + queSistema
+                    else "ALBASYS$queSistema"
 
-                    var URL = prefURL + "//" + prefs.getString("ip_servidor", "") + ":" + prefs.getString("puerto_servidor", "") + "/" + BD + ";"
+                    var queURL = prefURL + "//" + prefs.getString("ip_servidor", "") + ":" + prefs.getString("puerto_servidor", "") + "/" + queBaseDatos + ";"
 
                     // Nos creamos una conexión (de nombre connSys) que permanecerá abierta hasta que cerremos el programa.
                     // Esto es así porque la gestión comprueba las conexiones a la base de datos AlbaSys.
                     Driver().javaClass
-                    connSys = DriverManager.getConnection(URL, USER, PASS)
+                    connSys = DriverManager.getConnection(queURL, usuario, password)
 
                     var queBDGestion = ""
 
@@ -68,22 +70,23 @@ class DBConnection {
                     //val comm = conn.createStatement()
                     //rs = commSys.executeQuery("sp_who isPuesto" + queTerminal)
                     //if (!rs.isBeforeFirst) {
-                    URL = prefURL + "//" + prefs.getString("ip_servidor", "") + ":" + prefs.getString("puerto_servidor", "") + "/" + queBDGestion + ";"
-                    //USER = "isPuesto" + queTerminal
-                    //PASS = HashUtils.sha1("otseuPsi" + queTerminal)
-
-                    conn = DriverManager.getConnection(URL, USER, PASS)
+                    queURL = prefURL + "//" + prefs.getString("ip_servidor", "") + ":" + prefs.getString("puerto_servidor", "") + "/" + queBDGestion + ";"
+                    conn = DriverManager.getConnection(queURL, usuario, password)
                     connectionGES = conn
+
+                    queBaseDatos = if (quePrefijo!= "") quePrefijo + "_ALBADB$queSistema"
+                    else "ALBADB$queSistema"
+                    queURL = prefURL + "//" + prefs.getString("ip_servidor", "") +":" + prefs.getString("puerto_servidor", "") + "/" + queBaseDatos + ";"
+                    connDB = DriverManager.getConnection(queURL, usuario, password)
+                    connectionDB = connDB
 
                     // Tenemos que cerrar connSys y volverla a abrir con el puesto configurado
                     connSys.close()
-                    if (quePrefijo != "") BD = quePrefijo + "_ALBASYS" + queSistema
-                    else BD = "ALBASYS$queSistema"
-                    URL = prefURL + "//" + prefs.getString("ip_servidor", "") + ":" + prefs.getString("puerto_servidor", "") + "/" + BD + ";"
-                    connSys = DriverManager.getConnection(URL, USER, PASS)
+                    queBaseDatos = if (quePrefijo != "") quePrefijo + "_ALBASYS" + queSistema
+                    else "ALBASYS$queSistema"
+                    queURL = prefURL + "//" + prefs.getString("ip_servidor", "") + ":" + prefs.getString("puerto_servidor", "") + "/" + queBaseDatos + ";"
+                    connSys = DriverManager.getConnection(queURL, usuario, password)
                     connectionSYS = connSys
-                    //}
-                    //else conn.close()
                 }
 
             } catch (ex: SQLException) {

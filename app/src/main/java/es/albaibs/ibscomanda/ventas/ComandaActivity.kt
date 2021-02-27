@@ -30,6 +30,7 @@ class ComandaActivity: AppCompatActivity() {
     private lateinit var fAdptArticulos: ArticulosGrupoRvAdapter
     private val connInf: Connection = DBConnection.connectionINF as Connection
     private val connGes: Connection = DBConnection.connectionGES as Connection
+    private val connDB: Connection = DBConnection.connectionDB as Connection
     private lateinit var prefs: SharedPreferences
 
     private var fVistaActual: Int  = 1
@@ -304,6 +305,7 @@ class ComandaActivity: AppCompatActivity() {
                 CuentasDao.borrarCuenta(connGes, fSala, fMesa)
             } else {
                 imprimirCocina()
+                marcarMesaOcupada()
             }
         }
 
@@ -330,6 +332,10 @@ class ComandaActivity: AppCompatActivity() {
         }
     }
 
+
+    private fun marcarMesaOcupada() {
+        MueblesDao.guardarFlag(connDB, FLAGESTADOMESA_OCUPADA, fSala, fMesa)
+    }
 
 
     // Manejo los eventos del teclado en la actividad.

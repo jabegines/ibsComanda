@@ -21,6 +21,10 @@ const val FLAGLINEAHOSTELERIA_ES_MENU = 32
 const val FLAGLINEAHOSTELERIA_ES_ARTICULO_DE_MENU = 64
 
 
+// Flag Estado mesa
+const val FLAGESTADOMESA_OCUPADA = 1
+const val FLAGESTADOMESA_ENESPERA = 8
+
 
 class ListaSalas {
     var salaId: Short = 0
