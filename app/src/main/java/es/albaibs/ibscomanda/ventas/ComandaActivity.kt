@@ -18,7 +18,9 @@ import es.albaibs.ibscomanda.databinding.ComandaActivityBinding
 import es.albaibs.ibscomanda.varios.*
 import es.albaibs.ibscomanda.ventas.Impresion.Companion.imprimir
 import kotlinx.android.synthetic.main.comanda_activity.*
+import org.jetbrains.anko.alert
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.okButton
 import org.jetbrains.anko.uiThread
 import java.sql.Connection
 
@@ -42,6 +44,7 @@ class ComandaActivity: AppCompatActivity() {
     private var fLinea: Int = 0
     private var fTarifa: Int = 1
     private var fUsuario: Short = 0
+    private var fMesaUtilizada = false
 
     private var fPosicionActual = 0
     private var fDataActual = ListaArticulosGrupo()
@@ -56,6 +59,7 @@ class ComandaActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ComandaActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -70,8 +74,31 @@ class ComandaActivity: AppCompatActivity() {
 
         inicializarControles()
         prepararGruposVta()
+        // Vemos si la mesa está siendo utilizda por otro usuario
+        mesaUtilizada()
     }
 
+
+    private fun mesaUtilizada() {
+        doAsync {
+            fMesaUtilizada = !MueblesDao.actualizarBloqueo(connGes, fPuesto, fSala, fMesa)
+
+            uiThread {
+                if (fMesaUtilizada) {
+
+
+
+                    alert("La cuenta está siendo editada por otro usuario", "Atención") {
+                        okButton {
+                            val returnIntent = Intent()
+                            setResult(RESULT_CANCELED, returnIntent)
+                            finish()
+                        }
+                    }.show()
+                }
+            }
+        }
+    }
 
     private fun inicializarControles() {
         val numMesa = "Mesa\n$fMesa"
@@ -307,12 +334,16 @@ class ComandaActivity: AppCompatActivity() {
                 imprimirCocina()
                 marcarMesaOcupada()
             }
+            // Desbloqueamos la cuenta para que cualquier otro usuario pueda usarka
+            MueblesDao.desbloquearCuenta(connGes, fSala, fMesa)
         }
 
         val returnIntent = Intent()
         setResult(RESULT_OK, returnIntent)
         finish()
     }
+
+
 
     private fun imprimirCocina() {
         val lDatosCocina = LineasDao.consultaCocina(connInf, fSala, fMesa, 0)

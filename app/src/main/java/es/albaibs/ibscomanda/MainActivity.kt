@@ -10,6 +10,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import es.albaibs.ibscomanda.dao.MueblesDao
 import es.albaibs.ibscomanda.dao.SalasDao
 import es.albaibs.ibscomanda.ventas.ComandaActivity
 import es.albaibs.ibscomanda.databinding.MainActivityBinding
@@ -136,6 +137,8 @@ class MainActivity : AppCompatActivity() {
         val queSala = getString(R.string.sala) + " " + nombreSala
         binding.tvTitulos.text = queSala
     }
+
+
 
 
     private fun getMesas(salaId: Short): MutableList<ListaMesas> {
