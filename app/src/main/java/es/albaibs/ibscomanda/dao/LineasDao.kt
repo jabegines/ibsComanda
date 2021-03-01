@@ -3,6 +3,7 @@ package es.albaibs.ibscomanda.dao
 import android.os.HandlerThread
 import es.albaibs.ibscomanda.varios.DatosCocina
 import es.albaibs.ibscomanda.varios.DatosLinea
+import es.albaibs.ibscomanda.varios.FLAGLINEAHOSTELERIA_IMPRESA
 import java.sql.Connection
 import java.sql.Statement
 import java.text.SimpleDateFormat
@@ -131,6 +132,24 @@ class LineasDao {
             return try {
                 comm.execute("UPDATE HTLineasCuentas SET Cantidad = $queCantidad" +
                         " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion AND Linea = $fLinea")
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+        }
+
+
+        fun quitarMarcaCorregirEImpresa(conn: Connection, fSala: Short, fMesa: Short, fFraccion: Short): Boolean {
+            val comm: Statement = conn.createStatement()
+            return try {
+                comm.execute("UPDATE HTLineasCuenta SET Corregir = 'F', Flag = Flag | $FLAGLINEAHOSTELERIA_IMPRESA" +
+                        " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion")
+
+                // Marcamos también los modificadores como impresos. Nos vendrá bien si luego ejecutamos la opción de
+                // añadir a menú, ya que necesitaremos saber los modificadores que ya se han imprimido.
+                comm.execute("UPDATE HTLineasModif SET Flag = Flag | $FLAGLINEAHOSTELERIA_IMPRESA" +
+                        " WHERE Sala = $fSala AND Mesa = $fMesa AND Fraccion = $fFraccion")
 
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -38,7 +38,7 @@ class ArticulosDao {
 
 
 
-        fun getArticulosGrupo(conn: Connection, queGrupo: Int, fSala: Short, fMesa: Short): MutableList<ListaArticulosGrupo> {
+        fun getArticulosGrupo(conn: Connection, queGrupo: Int): MutableList<ListaArticulosGrupo> {
             val listaArticulos = emptyList<ListaArticulosGrupo>().toMutableList()
             val comm: Statement = conn.createStatement()
 

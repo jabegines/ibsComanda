@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ibsComanda</string>
 
+    <string name="uno">1</string>
     <string name="cant">Cant.</string>
     <string name="cantidad">Cantidad</string>
     <string name="comanda">Comanda</string>

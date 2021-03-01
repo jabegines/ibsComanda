@@ -5,15 +5,14 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import es.albaibs.ibscomanda.R
 import es.albaibs.ibscomanda.varios.ListaArticulosGrupo
-import kotlinx.android.synthetic.main.item_articulos_list.view.*
 
 
-class ArticulosGrupoRvAdapter(var articulos: MutableList<ListaArticulosGrupo>, var queCantidad: Double, val context: Context, var listener: OnItemClickListener): RecyclerView.Adapter<ArticulosGrupoRvAdapter.ViewHolder>() {
+class ArticulosGrupoRvAdapter(private var articulos: MutableList<ListaArticulosGrupo>, val context: Context, var listener: OnItemClickListener): RecyclerView.Adapter<ArticulosGrupoRvAdapter.ViewHolder>() {
 
     var selectedPos: Int = RecyclerView.NO_POSITION
 
@@ -21,15 +20,13 @@ class ArticulosGrupoRvAdapter(var articulos: MutableList<ListaArticulosGrupo>, v
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = articulos[position]
 
-        if (selectedPos == position) {
-            holder.itemView.tvCantVend.visibility = View.VISIBLE
-            holder.itemView.tvCantVend.text = String.format("%.0f", queCantidad)
+        //if (selectedPos == position) {
+        //    holder.itemView.tvCantVend.visibility = View.VISIBLE
+        //    holder.itemView.tvCantVend.text = String.format("%.0f", queCantidad)
+        //}
+        //else holder.itemView.tvCantVend.visibility = View.INVISIBLE
 
-        } else
-            holder.itemView.tvCantVend.visibility = View.INVISIBLE
-
-        holder.bind(item, context)
-
+        holder.bind(item, selectedPos, position)
 
         holder.itemView.setOnClickListener {
             selectedPos = position
@@ -60,10 +57,11 @@ class ArticulosGrupoRvAdapter(var articulos: MutableList<ListaArticulosGrupo>, v
 
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        private val clLayout = itemView.findViewById(R.id.clArticulosVta) as ConstraintLayout
+        private val llLayout = itemView.findViewById(R.id.llArticulosVta) as LinearLayout
         private val descripcion = itemView.findViewById(R.id.tvDescrArt) as TextView
+        private val cantidad = itemView.findViewById(R.id.tvCantVend) as TextView
 
-        fun bind(articulo: ListaArticulosGrupo, context: Context) {
+        fun bind(articulo: ListaArticulosGrupo, selectedPos: Int, position: Int) {
             val queTexto = articulo.texto ?: ""
             if (queTexto != "") {
                 val pos1 = queTexto.indexOf("BKCOL=", 0, true).plus(6)
@@ -88,10 +86,14 @@ class ArticulosGrupoRvAdapter(var articulos: MutableList<ListaArticulosGrupo>, v
                     if (queHex.length < 6) queHex = queHex.padEnd(6, '0')
 
                     queColor = "#$queHex"
-                    clLayout.setBackgroundColor(Color.parseColor(queColor))
+                    llLayout.setBackgroundColor(Color.parseColor(queColor))
                 }
             }
             descripcion.text = articulo.descripcion
+
+            if (selectedPos != position) cantidad.textSize = 18f
+            if (articulo.cantidad != 0.0) cantidad.text = String.format("%.0f", articulo.cantidad)
+            else cantidad.text = ""
         }
     }
 

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.KeyEvent
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,9 +19,7 @@ import es.albaibs.ibscomanda.databinding.ComandaActivityBinding
 import es.albaibs.ibscomanda.varios.*
 import es.albaibs.ibscomanda.ventas.Impresion.Companion.imprimir
 import kotlinx.android.synthetic.main.comanda_activity.*
-import org.jetbrains.anko.alert
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.okButton
 import org.jetbrains.anko.uiThread
 import java.sql.Connection
 
@@ -85,16 +84,16 @@ class ComandaActivity: AppCompatActivity() {
 
             uiThread {
                 if (fMesaUtilizada) {
-
-
-
-                    alert("La cuenta está siendo editada por otro usuario", "Atención") {
-                        okButton {
-                            val returnIntent = Intent()
-                            setResult(RESULT_CANCELED, returnIntent)
-                            finish()
-                        }
-                    }.show()
+                    val builder = AlertDialog.Builder(this@ComandaActivity)
+                    builder.setTitle("Atención")
+                    builder.setMessage("La cuenta está siendo editada por otro usuario")
+                    builder.setPositiveButton("OK") { _, _ ->
+                        val returnIntent = Intent()
+                        setResult(RESULT_CANCELED, returnIntent)
+                        finish()
+                    }
+                    builder.setCancelable(false)
+                    builder.show()
                 }
             }
         }
@@ -164,26 +163,30 @@ class ComandaActivity: AppCompatActivity() {
 
 
     private fun setRVArticulos(queGrupo: Int) {
-        fAdptArticulos = ArticulosGrupoRvAdapter(getArticulos(queGrupo), 0.0, this, object : ArticulosGrupoRvAdapter.OnItemClickListener {
+        fAdptArticulos = ArticulosGrupoRvAdapter(getArticulos(queGrupo), this, object : ArticulosGrupoRvAdapter.OnItemClickListener {
                 override fun onClick(view: View, data: ListaArticulosGrupo) {
+                    fDataActual = data
                     fPosicionActual = fAdptArticulos.selectedPos
                     fFormatoId = 0
                     // Vemos si el artículo es de menú
                     if (data.flag2 and FLAGARTICULO_ES_MENU > 0) {
-                        fAdptArticulos.queCantidad = 1.0
-                        seleccionarMenu(data)
+                        //fAdptArticulos.queCantidad = 1.0
+                        fDataActual.cantidad = 1.0
+                        seleccionarMenu()
 
                     // Vemos si el artículo tiene modificadores
                     } else if (articuloTieneModif(data.articuloId)) {
-                        fAdptArticulos.queCantidad = 1.0
-                        seleccionarModif(data)
+                        //fAdptArticulos.queCantidad = 1.0
+                        fDataActual.cantidad = 1.0
+                        seleccionarModif()
 
                     // Si el artículo tiene formatos los pediremos
                     } else {
                         if (data.flag1 and FLAGARTICULO_USARFORMATOS > 0) {
-                            fAdptArticulos.queCantidad = 1.0
-                            seleccionarFormato(data)
-                        } else vender(data, false)
+                            //fAdptArticulos.queCantidad = 1.0
+                            fDataActual.cantidad = 1.0
+                            seleccionarFormato()
+                        } else vender(false)
                     }
                 }
         })
@@ -199,28 +202,25 @@ class ComandaActivity: AppCompatActivity() {
     }
 
     private fun getArticulos(queGrupo: Int): MutableList<ListaArticulosGrupo> {
-        return ArticulosDao.getArticulosGrupo(connInf, queGrupo, fSala, fMesa)
+        return ArticulosDao.getArticulosGrupo(connInf, queGrupo)
     }
 
-    private fun seleccionarMenu(data: ListaArticulosGrupo) {
-        fDataActual = data
+    private fun seleccionarMenu() {
         val i = Intent(this, SeleccMenuActivity::class.java)
-        i.putExtra("articuloId", data.articuloId)
+        i.putExtra("articuloId", fDataActual.articuloId)
         startActivityForResult(i, fRequestSelecMenu)
     }
 
-    private fun seleccionarModif(data: ListaArticulosGrupo) {
-        fDataActual = data
+    private fun seleccionarModif() {
         val i = Intent(this, SeleccModifActivity::class.java)
-        i.putExtra("articuloId", data.articuloId)
+        i.putExtra("articuloId", fDataActual.articuloId)
         startActivityForResult(i, fRequestSelecModif)
     }
 
 
-    private fun seleccionarFormato(data: ListaArticulosGrupo) {
-        fDataActual = data
+    private fun seleccionarFormato() {
         val i = Intent(this, SeleccFormatoActivity::class.java)
-        i.putExtra("articuloId", data.articuloId)
+        i.putExtra("articuloId", fDataActual.articuloId)
         startActivityForResult(i, fRequestSelecFormato)
     }
 
@@ -236,7 +236,7 @@ class ComandaActivity: AppCompatActivity() {
 
 
 
-    private fun vender(data: ListaArticulosGrupo, esMenu: Boolean) {
+    private fun vender(esMenu: Boolean) {
         doAsync {
             val registro = DatosLinea()
             registro.sala = fSala
@@ -244,17 +244,16 @@ class ComandaActivity: AppCompatActivity() {
             registro.fraccion = 0
             registro.linea = fLinea
             registro.orden = LineasDao.dimeMaxOrden(connGes, fSala, fMesa)
-            registro.articuloId = data.articuloId
-            registro.codigoArt = data.codigo
-            registro.descripcion = data.descripcion
-            registro.descrTicket = data.descrTicket
+            registro.articuloId = fDataActual.articuloId
+            registro.codigoArt = fDataActual.codigo
+            registro.descripcion = fDataActual.descripcion
+            registro.descrTicket = fDataActual.descrTicket
             registro.cantidad = "1"
             registro.piezas = "0"
-            registro.precio = dimePrecioArt(data.articuloId)
-            registro.codigoDeIva = data.codigoIva
+            registro.precio = dimePrecioArt(fDataActual.articuloId)
+            registro.codigoDeIva = fDataActual.codigoIva
             registro.importe = calculaImporte(registro)
-            if (esMenu) registro.flag = FLAGLINEAHOSTELERIA_IMPRESA + FLAGLINEAHOSTELERIA_ES_MENU
-            else registro.flag = FLAGLINEAHOSTELERIA_IMPRESA
+            if (esMenu) registro.flag = FLAGLINEAHOSTELERIA_ES_MENU
             registro.usuario = fUsuario
             registro.formatoId = fFormatoId
             registro.flag2 = 0
@@ -268,18 +267,20 @@ class ComandaActivity: AppCompatActivity() {
             fLinea++
         }
 
-        fAdptArticulos.queCantidad = 1.0
+        //fAdptArticulos.queCantidad = 1.0
+        fDataActual.cantidad = 1.0
     }
 
     fun anyadirCant(view: View) {
         view.getTag(0)          // Para que no dé warning el compilador
 
         doAsync {
-            val queCantidad = LineasDao.dimeCantLinea(connGes, fSala, fMesa, 0, fLinea-1)
+            //val queCantidad = LineasDao.dimeCantLinea(connGes, fSala, fMesa, 0, fLinea-1)
             LineasDao.actualizarCantidad(connGes, fSala, fMesa, 0, fLinea-1, 1)
 
             uiThread {
-                fAdptArticulos.queCantidad = queCantidad + 1
+                //fAdptArticulos.queCantidad = queCantidad + 1
+                fDataActual.cantidad = fDataActual.cantidad + 1
                 fAdptArticulos.selectedPos = fPosicionActual
                 fAdptArticulos.notifyDataSetChanged()
             }
@@ -291,11 +292,12 @@ class ComandaActivity: AppCompatActivity() {
         view.getTag(0)          // Para que no dé warning el compilador
 
         doAsync {
-            val queCantidad = LineasDao.dimeCantLinea(connGes, fSala, fMesa, 0, fLinea-1)
+            //val queCantidad = LineasDao.dimeCantLinea(connGes, fSala, fMesa, 0, fLinea-1)
             LineasDao.actualizarCantidad(connGes, fSala, fMesa, 0, fLinea-1, -1)
 
             uiThread {
-                fAdptArticulos.queCantidad = queCantidad - 1
+                //fAdptArticulos.queCantidad = queCantidad - 1
+                fDataActual.cantidad = fDataActual.cantidad - 1
                 fAdptArticulos.selectedPos = fPosicionActual
                 fAdptArticulos.notifyDataSetChanged()
             }
@@ -332,6 +334,7 @@ class ComandaActivity: AppCompatActivity() {
                 CuentasDao.borrarCuenta(connGes, fSala, fMesa)
             } else {
                 imprimirCocina()
+                quitarMarcaCorregirEImpresa()
                 marcarMesaOcupada()
             }
             // Desbloqueamos la cuenta para que cualquier otro usuario pueda usarka
@@ -363,6 +366,9 @@ class ComandaActivity: AppCompatActivity() {
         }
     }
 
+    private fun quitarMarcaCorregirEImpresa() {
+        LineasDao.quitarMarcaCorregirEImpresa(connGes, fSala, fMesa, 0)
+    }
 
     private fun marcarMesaOcupada() {
         MueblesDao.guardarFlag(connDB, FLAGESTADOMESA_OCUPADA, fSala, fMesa)
@@ -394,7 +400,7 @@ class ComandaActivity: AppCompatActivity() {
                 fFormatoId = data?.getShortExtra("formatoId", 0) ?: 0
                 val queDescrFto = data?.getStringExtra("descrFto") ?: ""
                 if (queDescrFto != "") fDataActual.descripcion = queDescrFto + " " + fDataActual.descripcion
-                vender(fDataActual, false)
+                vender(false)
             }
         }
         else if (requestCode == fRequestSelecModif) {
@@ -421,10 +427,11 @@ class ComandaActivity: AppCompatActivity() {
 
                 // Si el artículo tiene formatos los pediremos
                 if (fDataActual.flag1 and FLAGARTICULO_USARFORMATOS > 0) {
-                    fAdptArticulos.queCantidad = 1.0
-                    seleccionarFormato(fDataActual)
+                    //fAdptArticulos.queCantidad = 1.0
+                    fDataActual.cantidad = 1.0
+                    seleccionarFormato()
                 }
-                else vender(fDataActual, false)
+                else vender(false)
             }
         } else if (requestCode == fRequestSelecMenu) {
             if (resultCode == Activity.RESULT_OK) {
@@ -449,7 +456,7 @@ class ComandaActivity: AppCompatActivity() {
                     x++
                 }
 
-                vender(fDataActual, true)
+                vender(true)
             }
         }
     }

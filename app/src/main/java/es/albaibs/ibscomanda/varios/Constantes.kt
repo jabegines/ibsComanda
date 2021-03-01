@@ -69,6 +69,7 @@ class ListaArticulosGrupo {
     var flag1: Int = 0
     var flag2: Int = 0
     var texto: String? = null
+    var cantidad: Double = 0.0
 }
 
 class ListaLineasCuenta {
