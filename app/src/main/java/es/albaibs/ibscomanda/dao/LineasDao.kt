@@ -246,7 +246,7 @@ class LineasDao {
                             datos.linea = rs.getInt("Linea")
                             datos.descripcion = rs.getString("Descripcion")
                             datos.descrTicket = rs.getString("Descripcion")
-                            datos.cantidad = rs.getString("Cantidad")
+                            datos.cantidad = rs.getDouble("Cantidad")
                             datos.piezas = rs.getString("Piezas")
                             datos.flag = rs.getShort("Flag")
                             datos.situacion = rs.getShort("Situacion")

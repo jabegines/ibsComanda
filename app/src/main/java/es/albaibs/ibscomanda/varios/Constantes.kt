@@ -130,7 +130,7 @@ class DatosCocina {
     var linea: Int = 0
     var descripcion: String = ""
     var descrTicket: String = ""
-    var cantidad: String = ""
+    var cantidad: Double = 0.0
     var piezas: String = ""
     var flag: Short = 0
     var situacion: Short = 0

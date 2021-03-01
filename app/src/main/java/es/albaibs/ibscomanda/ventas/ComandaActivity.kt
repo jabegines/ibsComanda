@@ -360,7 +360,7 @@ class ComandaActivity: AppCompatActivity() {
                 for (nombreImpresora in lImpresoras) {
                     // Buscamos en ConfiguracionPuestos qué configuración tiene la impresa (IP y puerto)
                     val datosImpresora = SituacionesPuestoDao.getConfImpresora(connInf, fPuesto, nombreImpresora)
-                    imprimir(lDatosCocina, datosImpresora, fSitActual, fSala, fMesa)
+                    imprimir(lDatosCocina, datosImpresora, fSitActual, fSala, fMesa, fUsuario)
                 }
             }
         }

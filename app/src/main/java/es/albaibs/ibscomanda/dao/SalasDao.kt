@@ -72,6 +72,21 @@ class SalasDao {
         }
 
 
+        fun getNombreSala(conn: Connection, queSala: Short): String {
+            val comm: Statement = conn.createStatement()
+
+            return try {
+                val rs = comm.executeQuery("SELECT Nombre FROM HTSalas WHERE Sala = $queSala")
+                if (rs.next()) rs.getString("Nombre")
+                else ""
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                ""
+            }
+        }
+
+
         fun existeSala(conn: Connection, queSala: Int): Boolean {
             val comm: Statement = conn.createStatement()
 
